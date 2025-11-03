@@ -1,10 +1,10 @@
 {
   "mappings": [
-    "/content/ujjwal-eds-poc/:/",
-    "/content/ujjwal-eds-poc/configuration:/.helix/config.json",
-    "/content/ujjwal-eds-poc/metadata:/metadata.json"
+    "/content/ujjwal-poc-eds/:/",
+    "/content/ujjwal-poc-eds/configuration:/.helix/config.json",
+    "/content/ujjwal-poc-eds/metadata:/metadata.json"
   ],
   "includes": [
-    "/content/ujjwal-eds-poc/"
+    "/content/ujjwal-poc-eds/"
   ]
 }
