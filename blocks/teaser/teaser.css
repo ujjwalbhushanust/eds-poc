@@ -136,7 +136,7 @@
             font-size: var(--body-font-size-s);
             font-family: var(--body-font-family);
             text-align: justify;
-            text-justify: newspaper;
+            /* text-justify: newspaper; */
             hyphens: auto;
 
             p.terms-and-conditions {
