@@ -145,22 +145,6 @@
     text-align: left;
 }
 
-/* Responsive: stack side-by-side variant on narrow screens */
-@media (max-width: 900px) {
-    .block.teaser.side-by-side {
-        flex-direction: column;
-    }
-
-    .block.teaser.side-by-side .image-wrapper {
-        width: 100%;
-        height: auto;
-    }
-
-    .block.teaser.side-by-side .content {
-        padding: 1.5rem;
-    }
-}
-
 /** Animations
     Keep @keyframes as before
 **/
