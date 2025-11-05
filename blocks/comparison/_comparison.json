@@ -1,0 +1,89 @@
+{
+  "definitions": [
+    {
+      "title": "Comparison",
+      "id": "comparison",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/comparison/v1/comparison",
+            "template": {
+              "name": "Comparison",
+              "model": "comparison",
+              "leftTitle": "SPLENDOR+",
+              "rightTitle": "HF DELUXE",
+              "leftImage": "",
+              "rightImage": "",
+              "rows": [
+                { "label": "Fuel Tank Capacity", "leftValue": "9.8 Litre", "rightValue": "9.6 Litre" },
+                { "label": "Height (mm)", "leftValue": "1052", "rightValue": "1045" },
+                { "label": "Length (mm)", "leftValue": "2000", "rightValue": "1965" },
+                { "label": "Adjustable Hydraulic Shock Absorbers", "leftValue": "5-step", "rightValue": "2-step" },
+                { "label": "Colour/Graphic Options", "leftValue": "11", "rightValue": "5" }
+              ]
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "comparison",
+      "fields": [
+        {
+          "component": "text",
+          "name": "leftTitle",
+          "label": "Left title",
+          "valueType": "string"
+        },
+        {
+          "component": "text",
+          "name": "rightTitle",
+          "label": "Right title",
+          "valueType": "string"
+        },
+        {
+          "component": "reference",
+          "valueType": "string",
+          "name": "leftImage",
+          "label": "Left image",
+          "multi": false
+        },
+        {
+          "component": "reference",
+          "valueType": "string",
+          "name": "rightImage",
+          "label": "Right image",
+          "multi": false
+        },
+        {
+          "component": "multifield",
+          "name": "rows",
+          "label": "Comparison rows",
+          "fields": [
+            {
+              "component": "text",
+              "name": "label",
+              "label": "Label",
+              "valueType": "string"
+            },
+            {
+              "component": "text",
+              "name": "leftValue",
+              "label": "Left value",
+              "valueType": "string"
+            },
+            {
+              "component": "text",
+              "name": "rightValue",
+              "label": "Right value",
+              "valueType": "string"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "filters": []
+}

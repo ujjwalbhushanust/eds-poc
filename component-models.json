@@ -180,6 +180,62 @@
     ]
   },
   {
+    "id": "comparison",
+    "fields": [
+      {
+        "component": "text",
+        "name": "leftTitle",
+        "label": "Left title",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "rightTitle",
+        "label": "Right title",
+        "valueType": "string"
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "leftImage",
+        "label": "Left image",
+        "multi": false
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "rightImage",
+        "label": "Right image",
+        "multi": false
+      },
+      {
+        "component": "multifield",
+        "name": "rows",
+        "label": "Comparison rows",
+        "fields": [
+          {
+            "component": "text",
+            "name": "label",
+            "label": "Label",
+            "valueType": "string"
+          },
+          {
+            "component": "text",
+            "name": "leftValue",
+            "label": "Left value",
+            "valueType": "string"
+          },
+          {
+            "component": "text",
+            "name": "rightValue",
+            "label": "Right value",
+            "valueType": "string"
+          }
+        ]
+      }
+    ]
+  },
+  {
     "id": "fragment",
     "fields": [
       {
