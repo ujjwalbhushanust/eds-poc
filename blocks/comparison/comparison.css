@@ -95,10 +95,6 @@
     padding: 1.1rem 0;
 }
 
-.block.comparison .comparison-spec-row + .comparison-spec-row {
-    border-top: 1px solid rgb(0, 0, 0, 0.06);
-}
-
 /* Values and labels */
 .block.comparison .left-value,
 .block.comparison .right-value {
