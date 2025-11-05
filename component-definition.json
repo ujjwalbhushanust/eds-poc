@@ -137,36 +137,20 @@
                 "template": {
                   "name": "Comparison",
                   "model": "comparison",
-                  "title": "COMPARE YOUR SPLENDOR+",
+                  "title": "Model comparison",
+                  "description": "<p>Compare features, specifications, or details side-by-side.</p>",
                   "comparisonItems": [
                     {
-                      "label": "Fuel Tank Capacity",
-                      "leftValue": "9.8 Litre",
-                      "rightValue": "9.6 Litre"
+                      "label": "Feature 1",
+                      "leftValue": "Value A1",
+                      "rightValue": "Value B1"
                     },
                     {
-                      "label": "Height (mm)",
-                      "leftValue": "1052",
-                      "rightValue": "1045"
-                    },
-                    {
-                      "label": "Length (mm)",
-                      "leftValue": "2000",
-                      "rightValue": "1965"
-                    },
-                    {
-                      "label": "Adjustable Hydraulic Shock Absorbers",
-                      "leftValue": "5-step",
-                      "rightValue": "2-step"
-                    },
-                    {
-                      "label": "Colour/Graphic Options",
-                      "leftValue": "11",
-                      "rightValue": "5"
+                      "label": "Feature 2",
+                      "leftValue": "Value A2",
+                      "rightValue": "Value B2"
                     }
-                  ],
-                  "leftImage": "https://via.placeholder.com/300x350?text=Splendor",
-                  "rightImage": "https://via.placeholder.com/300x350?text=HF+Deluxe"
+                  ]
                 }
               }
             }
