@@ -11,19 +11,9 @@
               "name": "Comparison",
               "model": "comparison",
               "title": "Model comparison",
-              "description": "<p>Compare features, specifications, or details side-by-side.</p>",
-              "comparisonItems": [
-                {
-                  "label": "Feature 1",
-                  "leftValue": "Value A1",
-                  "rightValue": "Value B1"
-                },
-                {
-                  "label": "Feature 2",
-                  "leftValue": "Value A2",
-                  "rightValue": "Value B2"
-                }
-              ]
+              "description": "<p>Short description about the two models. Add more details here.</p>",
+              "leftImage": "",
+              "rightImage": ""
             }
           }
         }
@@ -41,42 +31,22 @@
           "valueType": "string"
         },
         {
-          "component": "array",
-          "name": "comparisonItems",
-          "label": "Comparison Items",
-          "itemLabel": "Item",
-          "fields": [
-            {
-              "component": "text",
-              "name": "label",
-              "label": "Feature Label",
-              "valueType": "string"
-            },
-            {
-              "component": "text",
-              "name": "leftValue",
-              "label": "Left Value",
-              "valueType": "string"
-            },
-            {
-              "component": "text",
-              "name": "rightValue",
-              "label": "Right Value",
-              "valueType": "string"
-            }
-          ]
+          "component": "richtext",
+          "name": "description",
+          "label": "Description",
+          "valueType": "string"
         },
         {
           "component": "reference",
           "name": "leftImage",
-          "label": "Left Image",
+          "label": "Left image",
           "valueType": "string",
           "multi": false
         },
         {
           "component": "reference",
           "name": "rightImage",
-          "label": "Right Image",
+          "label": "Right image",
           "valueType": "string",
           "multi": false
         }
