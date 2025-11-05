@@ -133,42 +133,14 @@
           "plugins": {
             "xwalk": {
               "page": {
-                "resourceType": "core/franklin/components/block/v1/block",
+                "resourceType": "core/franklin/components/comparison/v1/comparison",
                 "template": {
                   "name": "Comparison",
                   "model": "comparison",
-                  "columns": [
-                    {
-                      "title": "SPLENDOR+",
-                      "image": ""
-                    },
-                    {
-                      "title": "HF DELUXE",
-                      "image": ""
-                    }
-                  ],
-                  "rows": [
-                    {
-                      "label": "Fuel Tank Capacity",
-                      "leftValue": "9.8 Litre",
-                      "rightValue": "9.6 Litre"
-                    },
-                    {
-                      "label": "Height (mm)",
-                      "leftValue": "1052",
-                      "rightValue": "1045"
-                    },
-                    {
-                      "label": "Length (mm)",
-                      "leftValue": "2000",
-                      "rightValue": "1965"
-                    },
-                    {
-                      "label": "Adjustable Hydraulic Shock Absorbers",
-                      "leftValue": "5-step",
-                      "rightValue": "2-step"
-                    }
-                  ]
+                  "title": "Model comparison",
+                  "description": "<p>Short description about the two models. Add more details here.</p>",
+                  "leftImage": "",
+                  "rightImage": ""
                 }
               }
             }

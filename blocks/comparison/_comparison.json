@@ -6,26 +6,14 @@
       "plugins": {
         "xwalk": {
           "page": {
-            "resourceType": "core/franklin/components/block/v1/block",
+            "resourceType": "core/franklin/components/comparison/v1/comparison",
             "template": {
               "name": "Comparison",
               "model": "comparison",
-              "columns": [
-                {
-                  "title": "SPLENDOR+",
-                  "image": ""
-                },
-                {
-                  "title": "HF DELUXE",
-                  "image": ""
-                }
-              ],
-              "rows": [
-                { "label": "Fuel Tank Capacity", "leftValue": "9.8 Litre", "rightValue": "9.6 Litre" },
-                { "label": "Height (mm)", "leftValue": "1052", "rightValue": "1045" },
-                { "label": "Length (mm)", "leftValue": "2000", "rightValue": "1965" },
-                { "label": "Adjustable Hydraulic Shock Absorbers", "leftValue": "5-step", "rightValue": "2-step" }
-              ]
+              "title": "Model comparison",
+              "description": "<p>Short description about the two models. Add more details here.</p>",
+              "leftImage": "",
+              "rightImage": ""
             }
           }
         }
@@ -37,51 +25,30 @@
       "id": "comparison",
       "fields": [
         {
-          "component": "multifield",
-          "name": "columns",
-          "label": "Columns (left / right)",
-          "description": "Define each column's title and image (first = left, second = right)",
-          "fields": [
-            {
-              "component": "text",
-              "name": "title",
-              "label": "Column title",
-              "valueType": "string"
-            },
-            {
-              "component": "reference",
-              "name": "image",
-              "label": "Column image",
-              "valueType": "string",
-              "multi": false
-            }
-          ]
+          "component": "text",
+          "name": "title",
+          "label": "Title",
+          "valueType": "string"
         },
         {
-          "component": "multifield",
-          "name": "rows",
-          "label": "Comparison rows",
-          "description": "Add one row per spec",
-          "fields": [
-            {
-              "component": "text",
-              "name": "label",
-              "label": "Spec label",
-              "valueType": "string"
-            },
-            {
-              "component": "text",
-              "name": "leftValue",
-              "label": "Left value",
-              "valueType": "string"
-            },
-            {
-              "component": "text",
-              "name": "rightValue",
-              "label": "Right value",
-              "valueType": "string"
-            }
-          ]
+          "component": "richtext",
+          "name": "description",
+          "label": "Description",
+          "valueType": "string"
+        },
+        {
+          "component": "reference",
+          "name": "leftImage",
+          "label": "Left image",
+          "valueType": "string",
+          "multi": false
+        },
+        {
+          "component": "reference",
+          "name": "rightImage",
+          "label": "Right image",
+          "valueType": "string",
+          "multi": false
         }
       ]
     }

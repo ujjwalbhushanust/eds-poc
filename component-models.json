@@ -183,51 +183,30 @@
     "id": "comparison",
     "fields": [
       {
-        "component": "multifield",
-        "name": "columns",
-        "label": "Columns (left / right)",
-        "description": "Define each column's title and image (first = left, second = right)",
-        "fields": [
-          {
-            "component": "text",
-            "name": "title",
-            "label": "Column title",
-            "valueType": "string"
-          },
-          {
-            "component": "reference",
-            "name": "image",
-            "label": "Column image",
-            "valueType": "string",
-            "multi": false
-          }
-        ]
+        "component": "text",
+        "name": "title",
+        "label": "Title",
+        "valueType": "string"
       },
       {
-        "component": "multifield",
-        "name": "rows",
-        "label": "Comparison rows",
-        "description": "Add one row per spec",
-        "fields": [
-          {
-            "component": "text",
-            "name": "label",
-            "label": "Spec label",
-            "valueType": "string"
-          },
-          {
-            "component": "text",
-            "name": "leftValue",
-            "label": "Left value",
-            "valueType": "string"
-          },
-          {
-            "component": "text",
-            "name": "rightValue",
-            "label": "Right value",
-            "valueType": "string"
-          }
-        ]
+        "component": "richtext",
+        "name": "description",
+        "label": "Description",
+        "valueType": "string"
+      },
+      {
+        "component": "reference",
+        "name": "leftImage",
+        "label": "Left image",
+        "valueType": "string",
+        "multi": false
+      },
+      {
+        "component": "reference",
+        "name": "rightImage",
+        "label": "Right image",
+        "valueType": "string",
+        "multi": false
       }
     ]
   },
