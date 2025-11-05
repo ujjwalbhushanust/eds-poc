@@ -19,12 +19,17 @@ function getOptions(block) {
  * @param {HTMLElement} block represents the block's DOM tree
  */
 function addEventListeners(block) {
-  block.querySelector('.button').addEventListener('mouseover', () => {
-    block.querySelector('.image').classList.add('zoom');
+  const img = block.querySelector('.image');
+  const btn = block.querySelector('.content .button') || block.querySelector('.button');
+
+  if (!btn || !img) return; // guard - don't attach if either is missing
+
+  btn.addEventListener('mouseover', () => {
+    img.classList.add('zoom');
   });
 
-  block.querySelector('.button').addEventListener('mouseout', () => {
-    block.querySelector('.image').classList.remove('zoom');
+  btn.addEventListener('mouseout', () => {
+    img.classList.remove('zoom');
   });
 }
 
@@ -37,9 +42,16 @@ function addEventListeners(block) {
  */
 export default function decorate(block) {
   /* Common treatments for all options */
-  block.querySelector(':scope > div:last-child').classList.add('content');
-  block.querySelector('h1,h2,h3,h4,h5,h6').classList.add('title');
-  block.querySelector('img').classList.add('image');
+  const options = getOptions(block);
+
+  const lastDiv = block.querySelector(':scope > div:last-child');
+  if (lastDiv) lastDiv.classList.add('content');
+
+  const heading = block.querySelector('h1,h2,h3,h4,h5,h6');
+  if (heading) heading.classList.add('title');
+
+  const img = block.querySelector('img');
+  if (img) img.classList.add('image');
 
   // Process each paragraph and mark it as text or terms-and-conditions
   block.querySelectorAll('p').forEach((p) => {
@@ -50,12 +62,14 @@ export default function decorate(block) {
   });
 
   /* Conditional treatments for specific options */
-  if (getOptions(block).includes('side-by-side')) {
+  if (options.includes('side-by-side')) {
     /* For side-by-side teaser, add the image-wrapper to a higher-level div to support CSS */
-    block.querySelector(':scope > div:first-child').classList.add('image-wrapper');
-  } else if (!getOptions(block)) {
+    const firstDiv = block.querySelector(':scope > div:first-child');
+    if (firstDiv) firstDiv.classList.add('image-wrapper');
+  } else if (options.length === 0) {
     /* For the default option, add the image-wrapper to the picture element to support CSS */
-    block.querySelector('picture').classList.add('image-wrapper');
+    const picture = block.querySelector('picture');
+    if (picture) picture.classList.add('image-wrapper');
   }
 
   addEventListeners(block);
