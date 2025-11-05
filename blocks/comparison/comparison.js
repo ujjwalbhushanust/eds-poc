@@ -71,11 +71,11 @@ export default function decorate(block) {
   const vtLeft = document.createElement('div');
   // CSS expects .comparison-vehicle-title for accent styles
   vtLeft.className = 'comparison-vehicle-title left';
-  vtLeft.textContent = 'SPLENDOR+';
+  vtLeft.textContent = (model && model.leftTitle) || 'SPLENDOR+';
   const vtSpacer = document.createElement('div');
   const vtRight = document.createElement('div');
   vtRight.className = 'comparison-vehicle-title right';
-  vtRight.textContent = 'HF DELUXE';
+  vtRight.textContent = (model && model.rightTitle) || 'HF DELUXE';
   vehicleTitles.appendChild(vtLeft);
   vehicleTitles.appendChild(vtSpacer);
   vehicleTitles.appendChild(vtRight);

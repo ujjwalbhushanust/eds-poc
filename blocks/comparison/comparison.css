@@ -43,9 +43,11 @@
    CONTENT SECTION
    ---------------------------- */
 .block.comparison .comparison-content {
-    flex: 1 1 60%;
-    max-width: 60%;
     text-align: center;
+}
+.vehicle-titles{
+    display: flex;
+    justify-content: space-between;
 }
 
 .block.comparison .comparison-title {

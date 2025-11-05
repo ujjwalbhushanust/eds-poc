@@ -189,6 +189,12 @@
         "valueType": "string"
       },
       {
+        "component": "richtext",
+        "name": "descriptionHTML",
+        "label": "Description",
+        "valueType": "string"
+      },
+      {
         "component": "reference",
         "name": "leftImage",
         "label": "Left image",
@@ -196,11 +202,66 @@
         "multi": false
       },
       {
+        "component": "text",
+        "name": "leftAlt",
+        "label": "Left image alt text",
+        "valueType": "string"
+      },
+      {
         "component": "reference",
         "name": "rightImage",
         "label": "Right image",
         "valueType": "string",
         "multi": false
+      },
+      {
+        "component": "text",
+        "name": "rightAlt",
+        "label": "Right image alt text",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "leftTitle",
+        "label": "Left vehicle title",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "rightTitle",
+        "label": "Right vehicle title",
+        "valueType": "string"
+      },
+      {
+        "component": "reference",
+        "name": "specs",
+        "label": "Specs",
+        "valueType": "string",
+        "multi": true,
+        "model": "spec"
+      }
+    ]
+  },
+  {
+    "id": "spec",
+    "fields": [
+      {
+        "component": "text",
+        "name": "label",
+        "label": "Spec label",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "leftValue",
+        "label": "Left value",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "rightValue",
+        "label": "Right value",
+        "valueType": "string"
       }
     ]
   },
