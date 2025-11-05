@@ -138,9 +138,19 @@
                   "name": "Comparison",
                   "model": "comparison",
                   "title": "Model comparison",
-                  "description": "<p>Short description about the two models. Add more details here.</p>",
-                  "leftImage": "",
-                  "rightImage": ""
+                  "description": "<p>Compare features, specifications, or details side-by-side.</p>",
+                  "comparisonItems": [
+                    {
+                      "label": "Feature 1",
+                      "leftValue": "Value A1",
+                      "rightValue": "Value B1"
+                    },
+                    {
+                      "label": "Feature 2",
+                      "leftValue": "Value A2",
+                      "rightValue": "Value B2"
+                    }
+                  ]
                 }
               }
             }
