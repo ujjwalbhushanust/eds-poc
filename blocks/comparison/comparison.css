@@ -4,122 +4,143 @@
 
 /* Container styling */
 .block.comparison {
-    box-sizing: border-box;
-    padding: 2rem;
-    background: var(--block-background, #f8fafc);
-    color: var(--text-color, #111827);
-    border: 1px solid #d1d5db;
-    border-radius: 6px;
+  box-sizing: border-box;
+  padding: 3.5rem 1rem 4rem;
+  background: #f2f2f2;
+  color: #111827;
+  position: relative;
+  overflow: visible;
 }
 
-/* Layout: Left Image / Center Content / Right Image */
-.block.comparison .comparison-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 2rem;
-    align-items: flex-start;
-    justify-content: center;
-}
-
-/* ----------------------------
-   IMAGE STYLING
-   ---------------------------- */
-.block.comparison .comparison-image {
-    width: 180px;
-    max-width: 25%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.block.comparison .comparison-image img {
-    width: 100%;
-    height: auto;
-    object-fit: contain;
-    display: block;
-    border-radius: 4px;
-}
-
-/* ----------------------------
-   CONTENT SECTION
-   ---------------------------- */
-.block.comparison .comparison-content {
-    flex: 1 1 60%;
-    max-width: 60%;
-    text-align: center;
-}
-
+/* Large centered title */
 .block.comparison .comparison-title {
-    margin: 0 0 0.75rem;
-    font-size: 1.75rem;
-    font-weight: 700;
-    color: var(--title-color, #111827);
+  text-align: center;
+  font-size: 2.25rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin: 0 0 2.5rem;
 }
 
-.block.comparison .comparison-description {
-    margin: 0 0 1.5rem;
-    color: var(--muted-color, #6b7280);
-    line-height: 1.6;
-    font-size: 1rem;
+/* Main row: left image / center content / right image */
+.block.comparison .comparison-row {
+  display: grid;
+  grid-template-columns: 1fr minmax(380px, 520px) 1fr;
+  align-items: start;
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-/* ----------------------------
-   COMPARISON SPECS GRID
-   ---------------------------- */
+/* Hero images pinned visually to edges */
+.block.comparison .comparison-image {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  position: relative;
+}
+.block.comparison .comparison-image img {
+  width: 320px;
+  max-width: 80%;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 18px 22px rgba(0,0,0,0.15));
+}
+
+/* center content: vehicle titles and the specs list */
+.block.comparison .comparison-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+/* Vehicle titles (left / right) sit above the spec values in their respective cells */
+.block.comparison .vehicle-titles {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  width: 100%;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+.block.comparison .vehicle-title {
+  font-weight: 800;
+  font-size: 1rem;
+  text-transform: uppercase;
+}
+.block.comparison .vehicle-title.left {
+  color: #ef4444; /* red */
+  justify-self: start;
+}
+.block.comparison .vehicle-title.right {
+  color: #0ea5ff; /* blue */
+  justify-self: end;
+}
+
+/* Specs grid */
 .block.comparison .comparison-specs {
-    width: 100%;
-    max-width: 600px;
-    display: flex;
-    flex-direction: column;
-    margin: 0 auto;
+  width: 100%;
 }
-
-/* Individual comparison spec rows */
 .block.comparison .comparison-spec-row {
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    align-items: center;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.1rem 0;
+}
+.block.comparison .comparison-spec-row + .comparison-spec-row {
+  border-top: 1px solid rgba(0,0,0,0.06);
+}
+
+/* Values and labels */
+.block.comparison .left-value,
+.block.comparison .right-value {
+  font-weight: 800;
+  font-size: 1.05rem;
+}
+.block.comparison .spec-label {
+  font-weight: 600;
+  color: #4b5563;
+  text-align: center;
+  font-size: 1rem;
+}
+
+/* left / right alignment */
+.block.comparison .left-cell { justify-self: start; text-align: left; }
+.block.comparison .label-cell { justify-self: center; }
+.block.comparison .right-cell { justify-self: end; text-align: right; }
+
+/* Place images further out visually on wide screens (mimic screenshot) */
+@media (min-width: 1200px) {
+  .block.comparison .comparison-image img {
+    width: 360px;
+  }
+  .block.comparison .comparison-row {
+    grid-template-columns: 1fr minmax(520px, 600px) 1fr;
+  }
+}
+
+/* Responsive: stack vertically on small screens */
+@media (max-width: 860px) {
+  .block.comparison {
+    padding: 2rem 1rem;
+  }
+  .block.comparison .comparison-row {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+  .block.comparison .vehicle-titles {
+    grid-template-columns: 1fr;
     text-align: center;
-    gap: 1rem;
-    padding: 0.75rem 0;
-    border-bottom: 1px solid #e5e7eb;
-}
-
-.block.comparison .comparison-spec-row:last-child {
-    border-bottom: none;
-}
-
-/* Cell styles */
-.block.comparison .comparison-label {
-    font-weight: 600;
-    color: var(--muted-color, #6b7280);
-    font-size: 0.95rem;
-}
-
-.block.comparison .comparison-value {
-    font-weight: 700;
-    color: var(--text-color, #111827);
+    gap: 0.5rem;
+  }
+  .block.comparison .left-value,
+  .block.comparison .right-value {
     font-size: 1rem;
-}
-
-/* Alignment classes */
-.block.comparison .left-cell {
-    grid-column: 1 / 2;
-    justify-self: start;
-}
-
-.block.comparison .label-cell {
-    grid-column: 2 / 3;
-    justify-self: center;
-}
-
-.block.comparison .right-cell {
-    grid-column: 3 / 4;
-    justify-self: end;
-}
-
-/* Accent for right column values */
-.block.comparison .comparison-vehicle-title.right,
-.block.comparison .comparison-value.right {
-    color: var(--accent-color-right, #0ea5ff);
+  }
+  .block.comparison .comparison-image img {
+    width: 60%;
+  }
 }
