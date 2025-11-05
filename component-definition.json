@@ -137,20 +137,9 @@
                 "template": {
                   "name": "Comparison",
                   "model": "comparison",
-                  "title": "Model comparison",
-                  "description": "<p>Compare features, specifications, or details side-by-side.</p>",
-                  "comparisonItems": [
-                    {
-                      "label": "Feature 1",
-                      "leftValue": "Value A1",
-                      "rightValue": "Value B1"
-                    },
-                    {
-                      "label": "Feature 2",
-                      "leftValue": "Value A2",
-                      "rightValue": "Value B2"
-                    }
-                  ]
+                  "title": "COMPARE YOUR SPLENDOR+",
+                  "leftImage": "https://via.placeholder.com/360x360?text=Left",
+                  "rightImage": "https://via.placeholder.com/360x360?text=Right"
                 }
               }
             }

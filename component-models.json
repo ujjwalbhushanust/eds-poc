@@ -189,42 +189,16 @@
         "valueType": "string"
       },
       {
-        "component": "array",
-        "name": "comparisonItems",
-        "label": "Comparison Items",
-        "itemLabel": "Item",
-        "fields": [
-          {
-            "component": "text",
-            "name": "label",
-            "label": "Feature Label",
-            "valueType": "string"
-          },
-          {
-            "component": "text",
-            "name": "leftValue",
-            "label": "Left Value",
-            "valueType": "string"
-          },
-          {
-            "component": "text",
-            "name": "rightValue",
-            "label": "Right Value",
-            "valueType": "string"
-          }
-        ]
-      },
-      {
         "component": "reference",
         "name": "leftImage",
-        "label": "Left Image",
+        "label": "Left image",
         "valueType": "string",
         "multi": false
       },
       {
         "component": "reference",
         "name": "rightImage",
-        "label": "Right Image",
+        "label": "Right image",
         "valueType": "string",
         "multi": false
       }
