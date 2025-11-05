@@ -183,40 +183,36 @@
     "id": "comparison",
     "fields": [
       {
-        "component": "text",
-        "name": "leftTitle",
-        "label": "Left title",
-        "valueType": "string"
-      },
-      {
-        "component": "text",
-        "name": "rightTitle",
-        "label": "Right title",
-        "valueType": "string"
-      },
-      {
-        "component": "reference",
-        "valueType": "string",
-        "name": "leftImage",
-        "label": "Left image",
-        "multi": false
-      },
-      {
-        "component": "reference",
-        "valueType": "string",
-        "name": "rightImage",
-        "label": "Right image",
-        "multi": false
+        "component": "multifield",
+        "name": "columns",
+        "label": "Columns (left / right)",
+        "description": "Define each column's title and image (first = left, second = right)",
+        "fields": [
+          {
+            "component": "text",
+            "name": "title",
+            "label": "Column title",
+            "valueType": "string"
+          },
+          {
+            "component": "reference",
+            "name": "image",
+            "label": "Column image",
+            "valueType": "string",
+            "multi": false
+          }
+        ]
       },
       {
         "component": "multifield",
         "name": "rows",
         "label": "Comparison rows",
+        "description": "Add one row per spec",
         "fields": [
           {
             "component": "text",
             "name": "label",
-            "label": "Label",
+            "label": "Spec label",
             "valueType": "string"
           },
           {
