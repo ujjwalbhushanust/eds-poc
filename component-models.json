@@ -180,62 +180,80 @@
     ]
   },
   {
-    "id": "compare",
+    "id": "product",
     "fields": [
       {
         "component": "text",
-        "valueType": "string",
-        "name": "compare_title",
-        "label": "Compare Title"
+        "name": "product_title",
+        "label": "Title",
+        "valueType": "string"
       },
       {
-        "component": "text",
-        "valueType": "string",
-        "name": "left_bike-name",
-        "label": "Left Bike Name"
+        "component": "richtext",
+        "name": "product_descriptionHTML",
+        "label": "Description",
+        "valueType": "string"
       },
       {
         "component": "reference",
+        "name": "product_leftImage",
+        "label": "Left image",
         "valueType": "string",
-        "name": "left_bike-image",
-        "label": "Left Bike Image",
         "multi": false
       },
       {
         "component": "text",
-        "valueType": "string",
-        "name": "right_bike-name",
-        "label": "Right Bike Name"
+        "name": "product_leftAlt",
+        "label": "Left image alt text",
+        "valueType": "string"
       },
       {
         "component": "reference",
+        "name": "product_rightImage",
+        "label": "Right image",
         "valueType": "string",
-        "name": "right_bike-image",
-        "label": "Right Bike Image",
         "multi": false
+      },
+      {
+        "component": "text",
+        "name": "product_rightAlt",
+        "label": "Right image alt text",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "product_leftTitle",
+        "label": "Left vehicle title",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "product_rightTitle",
+        "label": "Right vehicle title",
+        "valueType": "string"
       }
     ]
   },
   {
-    "id": "bikeSpecItem",
+    "id": "spec",
     "fields": [
       {
         "component": "text",
-        "valueType": "string",
-        "name": "spec-label",
-        "label": "Specification Label (e.g. Fuel Tank Capacity)"
+        "name": "label",
+        "label": "Spec label",
+        "valueType": "string"
       },
       {
         "component": "text",
-        "valueType": "string",
-        "name": "left-bike-value",
-        "label": "Left Bike Specification Value"
+        "name": "leftValue",
+        "label": "Left value",
+        "valueType": "string"
       },
       {
         "component": "text",
-        "valueType": "string",
-        "name": "right-bike-value",
-        "label": "Right Bike Specification Value"
+        "name": "rightValue",
+        "label": "Right value",
+        "valueType": "string"
       }
     ]
   },

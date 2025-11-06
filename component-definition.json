@@ -128,32 +128,65 @@
           }
         },
         {
-          "title": "Compare Bikes",
-          "id": "compare",
+          "title": "Comparison",
+          "id": "comparison",
           "plugins": {
             "xwalk": {
               "page": {
                 "resourceType": "core/franklin/components/block/v1/block",
                 "template": {
-                  "name": "Compare",
-                  "model": "compare",
-                  "filter": "compare"
+                  "name": "Comparison",
+                  "filter": "comparison",
+                  "title": "COMPARE YOUR SPLENDOR+",
+                  "leftImage": "https://via.placeholder.com/360x360?text=Left",
+                  "rightImage": "https://via.placeholder.com/360x360?text=Right",
+                  "leftTitle": "SPLENDOR+",
+                  "rightTitle": "HF DELUXE"
                 }
               }
             }
           }
         },
         {
-          "title": "Bike Specification Item",
-          "id": "bikeSpecItem",
+          "title": "Spec Group",
+          "id": "specGroup",
           "plugins": {
             "xwalk": {
               "page": {
                 "resourceType": "core/franklin/components/block/v1/block/item",
                 "template": {
-                  "name": "Bike Specification Item",
-                  "model": "bikeSpecItem",
-                  "classes": "bike_spec_item"
+                  "name": "Spec Group",
+                  "model": "specGroup"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Product",
+          "id": "product",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block/item",
+                "template": {
+                  "name": "Product",
+                  "model": "product"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Spec",
+          "id": "spec",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block/item",
+                "template": {
+                  "name": "Spec",
+                  "model": "spec"
                 }
               }
             }
