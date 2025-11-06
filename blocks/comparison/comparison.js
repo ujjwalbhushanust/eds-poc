@@ -82,7 +82,26 @@ export default function decorate(block) {
   const specsContainer = document.createElement('div');
   specsContainer.className = 'comparison-specs';
 
-  const specs = data.children || [];
+  // Support two possible content shapes:
+  // 1) Direct spec children: data.children = [ { label, leftValue, rightValue }, ... ]
+  // 2) Grouped specs (legacy): data.children = [ { specs: [ {label,..}, ... ] }, ... ]
+  const rawChildren = data.children || [];
+  const specs = [];
+  rawChildren.forEach((child) => {
+    if (!child) return;
+    // If this child has a 'specs' array (specGroup), flatten it
+    if (Array.isArray(child.specs) && child.specs.length) {
+      child.specs.forEach((s) => {
+        if (s) specs.push(s);
+      });
+      return;
+    }
+    // If child itself looks like a spec (has label or left/right values), use it
+    if (child.label || child.leftValue || child.rightValue) {
+      specs.push(child);
+    }
+  });
+
   specs.forEach((spec) => {
     const rowSpec = document.createElement('div');
     rowSpec.className = 'comparison-spec-row';

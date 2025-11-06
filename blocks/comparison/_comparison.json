@@ -21,21 +21,6 @@
       }
     },
     {
-      "title": "Spec Group",
-      "id": "specGroup",
-      "plugins": {
-        "xwalk": {
-          "page": {
-            "resourceType": "core/franklin/components/block/v1/block/item",
-            "template": {
-              "name": "Spec Group",
-              "model": "specGroup"
-            }
-          }
-        }
-      }
-    },
-    {
       "title": "Product",
       "id": "product",
       "plugins": {
