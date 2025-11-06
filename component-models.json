@@ -180,27 +180,6 @@
     ]
   },
   {
-    "id": "comparison",
-    "fields": [
-      {
-        "component": "reference",
-        "name": "product",
-        "label": "Product group (contains product_* fields)",
-        "valueType": "string",
-        "multi": false,
-        "model": "product"
-      },
-      {
-        "component": "reference",
-        "name": "specGroups",
-        "label": "Spec groups (each group can contain multiple specs, e.g. up to 4)",
-        "valueType": "string",
-        "multi": true,
-        "model": "specGroup"
-      }
-    ]
-  },
-  {
     "id": "product",
     "fields": [
       {

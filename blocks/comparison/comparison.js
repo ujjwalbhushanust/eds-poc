@@ -14,13 +14,23 @@ export default function decorate(block) {
 
   // read title and images from model or from first elements
   const heading = block.querySelector('h1,h2,h3,h4,h5,h6');
+  const modelProductFromItems = Array.isArray(model && model.items)
+    ? model.items.find((it) => it && it.model === 'product')
+    : null;
+  const product = model && (model.product || modelProductFromItems);
+
   const title = (model && model.title)
+    || (product && (product.product_title || product.title))
     || (heading && heading.textContent.trim())
     || 'Compare models';
 
   const imgs = Array.from(block.querySelectorAll('img'));
-  const leftSrc = (model && model.leftImage) || (imgs[0] && imgs[0].src) || '';
+  const leftSrc = (model && model.leftImage)
+    || (product && (product.product_leftImage || product.leftImage))
+    || (imgs[0] && imgs[0].src)
+    || '';
   const rightSrc = (model && model.rightImage)
+    || (product && (product.product_rightImage || product.rightImage))
     || (imgs[1] && imgs[1].src)
     || (imgs[0] && imgs[0].src)
     || '';
@@ -71,11 +81,17 @@ export default function decorate(block) {
   const vtLeft = document.createElement('div');
   // CSS expects .comparison-vehicle-title for accent styles
   vtLeft.className = 'comparison-vehicle-title left';
-  vtLeft.textContent = (model && model.leftTitle) || 'SPLENDOR+';
+  const leftTitleText = (model && model.leftTitle)
+    || (product && (product.product_leftTitle || product.leftTitle))
+    || 'SPLENDOR+';
+  vtLeft.textContent = leftTitleText;
   const vtSpacer = document.createElement('div');
   const vtRight = document.createElement('div');
   vtRight.className = 'comparison-vehicle-title right';
-  vtRight.textContent = (model && model.rightTitle) || 'HF DELUXE';
+  const rightTitleText = (model && model.rightTitle)
+    || (product && (product.product_rightTitle || product.rightTitle))
+    || 'HF DELUXE';
+  vtRight.textContent = rightTitleText;
   vehicleTitles.appendChild(vtLeft);
   vehicleTitles.appendChild(vtSpacer);
   vehicleTitles.appendChild(vtRight);
@@ -118,7 +134,10 @@ export default function decorate(block) {
   center.appendChild(specsWrap);
 
   // optional: render description from model if provided
-  const descriptionHTML = (model && model.descriptionHTML) || '';
+  // description may live on the product item or on the block model
+  const descriptionHTML = (model && model.descriptionHTML)
+    || (product && (product.product_descriptionHTML || product.descriptionHTML))
+    || '';
   if (descriptionHTML) {
     const desc = document.createElement('div');
     desc.className = 'comparison-description';
