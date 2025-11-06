@@ -33,8 +33,11 @@ export default function decorate(block) {
 
   block.classList.add('block', 'comparison');
 
-  // read model data (Franklin runtime)
+  // read model data (Franklin runtime). In authoring the block data may use
+  // different keys; try multiple fallbacks (children, specs, product_ prefixed keys).
   const model = (window.getBlockData && window.getBlockData(block)) || {};
+
+  // (no helper functions required here)
 
   // fallback: try to parse existing markup if model is empty
   const fromMarkup = () => {
@@ -49,25 +52,56 @@ export default function decorate(block) {
 
   const data = { ...fromMarkup(), ...(model || {}) };
 
-  // collect specs: prefer model.specs (array), else check children for spec items
+  // collect specs from multiple possible locations:
+  //  - model.children (Franklin block children)
+  //  - data.children
+  //  - model.specs or data.specs (if provided as array)
+  //  - fallback: parse direct child markup
   let specs = [];
-  if (Array.isArray(data.specs) && data.specs.length) specs = data.specs;
-  else {
+  if (Array.isArray(model.children) && model.children.length) {
+    specs = model.children.slice();
+  } else if (Array.isArray(data.children) && data.children.length) {
+    specs = data.children.slice();
+  } else if (Array.isArray(model.specs) && model.specs.length) {
+    specs = model.specs.slice();
+  } else if (Array.isArray(data.specs) && data.specs.length) {
+    specs = data.specs.slice();
+  } else {
     // try to read children as spec items: each child block with label/leftValue/rightValue
-    const children = Array.from(
-      block.querySelectorAll(':scope > div, :scope > section'),
-    );
+    const children = Array.from(block.children || []);
     children.forEach((ch) => {
-      const label = ch
-        .querySelector('.label, .spec-label')
-        ?.textContent?.trim();
-      const left = ch.querySelector('.left, .left-value')?.textContent?.trim();
-      const right = ch
-        .querySelector('.right, .right-value')
-        ?.textContent?.trim();
-      if (label || left || right) specs.push({ label, leftValue: left, rightValue: right });
+      let label = null;
+      let left = null;
+      let right = null;
+      if (ch.querySelector) {
+        const qLabel = ch.querySelector('.label, .spec-label');
+        if (qLabel) label = qLabel.textContent.trim();
+        const qLeft = ch.querySelector('.left, .left-value');
+        if (qLeft) left = qLeft.textContent.trim();
+        const qRight = ch.querySelector('.right, .right-value');
+        if (qRight) right = qRight.textContent.trim();
+      }
+      if (label || left || right) {
+        specs.push({
+          label,
+          leftValue: left,
+          rightValue: right,
+        });
+      }
     });
   }
+
+  const flattenSpecs = [];
+  specs.forEach((s) => {
+    if (s && Array.isArray(s.specs) && s.specs.length) {
+      s.specs.forEach((ss) => {
+        if (ss) flattenSpecs.push(ss);
+      });
+    } else if (s && (s.label || s.leftValue || s.rightValue)) {
+      flattenSpecs.push(s);
+    }
+  });
+  specs = flattenSpecs;
 
   // clear and build new DOM using helpers
   block.innerHTML = '';
