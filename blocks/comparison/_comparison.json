@@ -126,7 +126,7 @@
   ],
   "filters": [
     {
-      "id": "comparison",
+      "id": "comparison-specs",
       "components": [
         "spec"
       ]
