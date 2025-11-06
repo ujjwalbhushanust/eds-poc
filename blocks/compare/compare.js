@@ -1,9 +1,27 @@
 export default function decorate(block) {
   const data = window.getBlockData(block); // provided by Franklin runtime
 
+  // helper: try multiple candidate keys for backward compatibility
+  const getField = (obj, keys, fallback = '') => {
+    for (let i = 0; i < keys.length; i += 1) {
+      const k = keys[i];
+      if (
+        Object.prototype.hasOwnProperty.call(obj, k)
+        && obj[k] !== undefined
+        && obj[k] !== null
+        && obj[k] !== ''
+      ) return obj[k];
+    }
+    return fallback;
+  };
+
   const title = document.createElement('h2');
   title.className = 'compare-title';
-  title.textContent = data.compare_title || 'Compare Bikes';
+  title.textContent = getField(
+    data,
+    ['compare-title', 'compare_title', 'compareTitle'],
+    'Compare Bikes',
+  );
 
   const container = document.createElement('div');
   container.className = 'compare-container';
@@ -13,11 +31,23 @@ export default function decorate(block) {
   leftSection.className = 'bike left';
 
   const leftImg = document.createElement('img');
-  leftImg.src = data.left_bike_image;
-  leftImg.alt = data.left_bike_name;
+  leftImg.src = getField(data, [
+    'left-bike-image',
+    'left_bike_image',
+    'leftBikeImage',
+  ]);
+  leftImg.alt = getField(data, [
+    'left-bike-name',
+    'left_bike_name',
+    'leftBikeName',
+  ]);
 
   const leftName = document.createElement('h3');
-  leftName.textContent = data.left_bike_name;
+  leftName.textContent = getField(data, [
+    'left-bike-name',
+    'left_bike_name',
+    'leftBikeName',
+  ]);
 
   leftSection.append(leftImg, leftName);
 
@@ -26,11 +56,23 @@ export default function decorate(block) {
   rightSection.className = 'bike right';
 
   const rightImg = document.createElement('img');
-  rightImg.src = data.right_bike_image;
-  rightImg.alt = data.right_bike_name;
+  rightImg.src = getField(data, [
+    'right-bike-image',
+    'right_bike_image',
+    'rightBikeImage',
+  ]);
+  rightImg.alt = getField(data, [
+    'right-bike-name',
+    'right_bike_name',
+    'rightBikeName',
+  ]);
 
   const rightName = document.createElement('h3');
-  rightName.textContent = data.right_bike_name;
+  rightName.textContent = getField(data, [
+    'right-bike-name',
+    'right_bike_name',
+    'rightBikeName',
+  ]);
 
   rightSection.append(rightImg, rightName);
 
@@ -43,13 +85,25 @@ export default function decorate(block) {
     const row = document.createElement('tr');
 
     const label = document.createElement('td');
-    label.textContent = spec.spec_label;
+    label.textContent = getField(spec, [
+      'spec-label',
+      'spec_label',
+      'specLabel',
+    ]);
 
     const leftValue = document.createElement('td');
-    leftValue.textContent = spec.left_bike_value;
+    leftValue.textContent = getField(spec, [
+      'left-bike-value',
+      'left_bike_value',
+      'leftBikeValue',
+    ]);
 
     const rightValue = document.createElement('td');
-    rightValue.textContent = spec.right_bike_value;
+    rightValue.textContent = getField(spec, [
+      'right-bike-value',
+      'right_bike_value',
+      'rightBikeValue',
+    ]);
 
     row.append(label, leftValue, rightValue);
     specsTable.appendChild(row);
