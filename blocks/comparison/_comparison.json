@@ -76,7 +76,7 @@
         },
         {
           "component": "text",
-          "name": "lproduct_eftAlt",
+          "name": "product_leftAlt",
           "label": "Left image alt text",
           "valueType": "string"
         },
