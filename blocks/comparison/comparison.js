@@ -1,158 +1,179 @@
 export default function decorate(block) {
-  const data = window.getBlockData(block); // provided by Franklin runtime
+  block.classList.add('block', 'comparison');
 
-  // helper: try multiple candidate keys for backward compatibility
-  const getField = (obj, keys, fallback = '') => {
-    for (let i = 0; i < keys.length; i += 1) {
-      const k = keys[i];
-      if (
-        Object.prototype.hasOwnProperty.call(obj, k)
-        && obj[k] !== undefined
-        && obj[k] !== null
-        && obj[k] !== ''
-      ) return obj[k];
+  // try parse JSON model if present
+  let model = null;
+  const jsonScript = block.querySelector('script[type="application/json"]');
+  if (jsonScript) {
+    try {
+      model = JSON.parse(jsonScript.textContent || '{}');
+    } catch (e) {
+      model = null;
     }
-    return fallback;
-  };
+  }
 
-  // Build DOM structure to match comparison.css selectors
-  block.classList.add('comparison');
+  // read title and images from model or from first elements
+  const heading = block.querySelector('h1,h2,h3,h4,h5,h6');
+  const title = (model && model.title)
+    || (heading && heading.textContent.trim())
+    || 'Compare models';
 
-  const title = document.createElement('h2');
-  title.className = 'comparison-title';
-  title.textContent = getField(
-    data,
-    ['title', 'compare-title', 'compare_title', 'compareTitle'],
-    'Compare Bikes',
-  );
+  const imgs = Array.from(block.querySelectorAll('img'));
+  const leftSrc = (model && model.leftImage) || (imgs[0] && imgs[0].src) || '';
+  const rightSrc = (model && model.rightImage)
+    || (imgs[1] && imgs[1].src)
+    || (imgs[0] && imgs[0].src)
+    || '';
+
+  // static spec rows (match screenshot)
+  const staticSpecs = [
+    { label: 'Fuel Tank Capacity', left: '9.8 Litre', right: '9.6 Litre' },
+    { label: 'Height (mm)', left: '1052', right: '1045' },
+    { label: 'Length (mm)', left: '2000', right: '1965' },
+    {
+      label: 'Adjustable Hydraulic Shock Absorbers',
+      left: '5-step',
+      right: '2-step',
+    },
+    { label: 'Colour/Graphic Options', left: '11', right: '5' },
+  ];
+
+  // rebuild DOM
+  block.innerHTML = '';
+
+  const titleEl = document.createElement('div');
+  titleEl.className = 'comparison-title';
+  titleEl.textContent = title;
+  block.appendChild(titleEl);
 
   const row = document.createElement('div');
   row.className = 'comparison-row';
 
-  // Left image column
+  // left image
   const leftCol = document.createElement('div');
   leftCol.className = 'comparison-image';
-  const leftImg = document.createElement('img');
-  leftImg.src = getField(
-    data,
-    ['leftImage', 'left_image', 'leftImageUrl', 'product_leftImage'],
-    '',
-  );
-  leftImg.alt = getField(
-    data,
-    ['leftTitle', 'left_title', 'product_leftAlt'],
-    '',
-  );
-  leftCol.appendChild(leftImg);
+  if (leftSrc) {
+    const imgL = document.createElement('img');
+    imgL.src = leftSrc;
+    imgL.alt = (model && model.leftAlt) || 'Left image';
+    leftCol.appendChild(imgL);
+  }
+  row.appendChild(leftCol);
 
-  // Content column (titles + specs)
-  const contentCol = document.createElement('div');
-  contentCol.className = 'comparison-content';
+  // center content
+  const center = document.createElement('div');
+  // match CSS which targets .comparison-content
+  center.className = 'comparison-content';
 
+  // vehicle titles (static colored headings)
   const vehicleTitles = document.createElement('div');
   vehicleTitles.className = 'vehicle-titles';
+  const vtLeft = document.createElement('div');
+  // CSS expects .comparison-vehicle-title for accent styles
+  vtLeft.className = 'comparison-vehicle-title left';
+  vtLeft.textContent = (model && model.leftTitle) || 'SPLENDOR+';
+  const vtSpacer = document.createElement('div');
+  const vtRight = document.createElement('div');
+  vtRight.className = 'comparison-vehicle-title right';
+  vtRight.textContent = (model && model.rightTitle) || 'HF DELUXE';
+  vehicleTitles.appendChild(vtLeft);
+  vehicleTitles.appendChild(vtSpacer);
+  vehicleTitles.appendChild(vtRight);
+  center.appendChild(vehicleTitles);
 
-  const leftTitle = document.createElement('div');
-  leftTitle.className = 'comparison-vehicle-title left';
-  leftTitle.textContent = getField(
-    data,
-    ['leftTitle', 'left_title', 'product_leftTitle'],
-    'Left',
-  );
-
-  const rightTitle = document.createElement('div');
-  rightTitle.className = 'comparison-vehicle-title right';
-  rightTitle.textContent = getField(
-    data,
-    ['rightTitle', 'right_title', 'product_rightTitle'],
-    'Right',
-  );
-
-  vehicleTitles.append(leftTitle, rightTitle);
-
-  const description = document.createElement('p');
-  description.className = 'comparison-description';
-  description.innerHTML = getField(
-    data,
-    ['description', 'product_descriptionHTML'],
-    '',
-  );
-
-  // Specs list
-  const specsContainer = document.createElement('div');
-  specsContainer.className = 'comparison-specs';
-
-  // Support two possible content shapes:
-  // 1) Direct spec children: data.children = [ { label, leftValue, rightValue }, ... ]
-  // 2) Grouped specs (legacy): data.children = [ { specs: [ {label,..}, ... ] }, ... ]
-  const rawChildren = data.children || [];
-  const specs = [];
-  rawChildren.forEach((child) => {
-    if (!child) return;
-    // If this child has a 'specs' array (specGroup), flatten it
-    if (Array.isArray(child.specs) && child.specs.length) {
-      child.specs.forEach((s) => {
-        if (s) specs.push(s);
-      });
-      return;
-    }
-    // If child itself looks like a spec (has label or left/right values), use it
-    if (child.label || child.leftValue || child.rightValue) {
-      specs.push(child);
-    }
-  });
-
-  specs.forEach((spec) => {
-    const rowSpec = document.createElement('div');
-    rowSpec.className = 'comparison-spec-row';
+  // specs
+  const specsWrap = document.createElement('div');
+  specsWrap.className = 'comparison-specs';
+  staticSpecs.forEach((s) => {
+    const rowEl = document.createElement('div');
+    rowEl.className = 'comparison-spec-row';
 
     const leftCell = document.createElement('div');
-    leftCell.className = 'left-cell comparison-value left-value';
-    leftCell.textContent = getField(
-      spec,
-      ['leftValue', 'left_value', 'leftValueText', 'product_leftValue'],
-      '',
-    );
+    leftCell.className = 'left-cell';
+    const leftVal = document.createElement('div');
+    // add comparison-value class so CSS accent selectors match
+    leftVal.className = 'comparison-value left-value';
+    leftVal.textContent = s.left;
+    leftCell.appendChild(leftVal);
 
     const labelCell = document.createElement('div');
-    labelCell.className = 'label-cell spec-label';
-    labelCell.textContent = getField(
-      spec,
-      ['label', 'spec-label', 'spec_label', 'specLabel'],
-      '',
-    );
+    labelCell.className = 'label-cell';
+    const lbl = document.createElement('div');
+    lbl.className = 'spec-label';
+    lbl.textContent = s.label;
+    labelCell.appendChild(lbl);
 
     const rightCell = document.createElement('div');
-    rightCell.className = 'right-cell comparison-value right-value';
-    rightCell.textContent = getField(
-      spec,
-      ['rightValue', 'right_value', 'rightValueText', 'product_rightValue'],
-      '',
-    );
+    rightCell.className = 'right-cell';
+    const rightVal = document.createElement('div');
+    rightVal.className = 'comparison-value right-value';
+    rightVal.textContent = s.right;
+    rightCell.appendChild(rightVal);
 
-    rowSpec.append(leftCell, labelCell, rightCell);
-    specsContainer.append(rowSpec);
+    rowEl.appendChild(leftCell);
+    rowEl.appendChild(labelCell);
+    rowEl.appendChild(rightCell);
+    specsWrap.appendChild(rowEl);
   });
+  center.appendChild(specsWrap);
 
-  contentCol.append(vehicleTitles, description, specsContainer);
+  // optional: render description from model if provided
+  const descriptionHTML = (model && model.descriptionHTML) || '';
+  if (descriptionHTML) {
+    const desc = document.createElement('div');
+    desc.className = 'comparison-description';
+    desc.innerHTML = descriptionHTML;
+    center.appendChild(desc);
+  }
 
-  // Right image column
+  // optional: render additional specs from model if present (array of {label,leftValue,rightValue})
+  const extraSpecs = (model && Array.isArray(model.specs) && model.specs) || [];
+  if (extraSpecs.length) {
+    // append to the existing specsWrap
+    extraSpecs.forEach((s) => {
+      const rowEl = document.createElement('div');
+      rowEl.className = 'comparison-spec-row';
+
+      const leftCell = document.createElement('div');
+      leftCell.className = 'left-cell';
+      const leftVal = document.createElement('div');
+      leftVal.className = 'comparison-value left-value';
+      leftVal.textContent = s.leftValue || '';
+      leftCell.appendChild(leftVal);
+
+      const labelCell = document.createElement('div');
+      labelCell.className = 'label-cell';
+      const lbl = document.createElement('div');
+      lbl.className = 'spec-label';
+      lbl.textContent = s.label || '';
+      labelCell.appendChild(lbl);
+
+      const rightCell = document.createElement('div');
+      rightCell.className = 'right-cell';
+      const rightVal = document.createElement('div');
+      rightVal.className = 'comparison-value right-value';
+      rightVal.textContent = s.rightValue || '';
+      rightCell.appendChild(rightVal);
+
+      rowEl.appendChild(leftCell);
+      rowEl.appendChild(labelCell);
+      rowEl.appendChild(rightCell);
+      specsWrap.appendChild(rowEl);
+    });
+  }
+
+  row.appendChild(center);
+
+  // right image
   const rightCol = document.createElement('div');
   rightCol.className = 'comparison-image';
-  const rightImg = document.createElement('img');
-  rightImg.src = getField(
-    data,
-    ['rightImage', 'right_image', 'product_rightImage'],
-    '',
-  );
-  rightImg.alt = getField(
-    data,
-    ['rightTitle', 'right_title', 'product_rightAlt'],
-    '',
-  );
-  rightCol.appendChild(rightImg);
+  if (rightSrc) {
+    const imgR = document.createElement('img');
+    imgR.src = rightSrc;
+    imgR.alt = (model && model.rightAlt) || 'Right image';
+    rightCol.appendChild(imgR);
+  }
+  row.appendChild(rightCol);
 
-  row.append(leftCol, contentCol, rightCol);
-
-  block.append(title, row);
+  block.appendChild(row);
 }

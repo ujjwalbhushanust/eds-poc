@@ -42,9 +42,8 @@
     ]
   },
   {
-    "id": "comparison",
+    "id": "comparison-specs",
     "components": [
-      "product",
       "spec"
     ]
   }

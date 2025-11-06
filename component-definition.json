@@ -136,27 +136,12 @@
                 "resourceType": "core/franklin/components/block/v1/block",
                 "template": {
                   "name": "Comparison",
-                  "filter": "comparison",
+                  "model": "comparison",
                   "title": "COMPARE YOUR SPLENDOR+",
                   "leftImage": "https://via.placeholder.com/360x360?text=Left",
                   "rightImage": "https://via.placeholder.com/360x360?text=Right",
                   "leftTitle": "SPLENDOR+",
                   "rightTitle": "HF DELUXE"
-                }
-              }
-            }
-          }
-        },
-        {
-          "title": "Product",
-          "id": "product",
-          "plugins": {
-            "xwalk": {
-              "page": {
-                "resourceType": "core/franklin/components/block/v1/block/item",
-                "template": {
-                  "name": "Product",
-                  "model": "product"
                 }
               }
             }
