@@ -184,61 +184,41 @@
     "fields": [
       {
         "component": "text",
-        "name": "product_title",
+        "name": "comparison_title",
         "label": "Title",
         "valueType": "string"
       },
       {
-        "component": "richtext",
-        "name": "product_descriptionHTML",
-        "label": "Description",
+        "component": "text",
+        "name": "comparison_leftTitle",
+        "label": "Left Bike Name",
         "valueType": "string"
       },
       {
         "component": "reference",
-        "name": "product_leftImage",
-        "label": "Left image",
-        "valueType": "string",
-        "multi": false
+        "name": "comparison_leftImage",
+        "label": "Left Bike Image",
+        "valueType": "string"
       },
       {
         "component": "text",
-        "name": "product_leftAlt",
-        "label": "Left image alt text",
+        "name": "comparison_rightTitle",
+        "label": "Right Bike Name",
         "valueType": "string"
       },
       {
         "component": "reference",
-        "name": "product_rightImage",
-        "label": "Right image",
-        "valueType": "string",
-        "multi": false
-      },
-      {
-        "component": "text",
-        "name": "product_rightAlt",
-        "label": "Right image alt text",
-        "valueType": "string"
-      },
-      {
-        "component": "text",
-        "name": "product_leftTitle",
-        "label": "Left vehicle title",
-        "valueType": "string"
-      },
-      {
-        "component": "text",
-        "name": "product_rightTitle",
-        "label": "Right vehicle title",
+        "name": "comparison_rightImage",
+        "label": "Right Bike Image",
         "valueType": "string"
       },
       {
         "component": "reference",
-        "name": "product_specs",
-        "label": "Specs",
-        "valueType": "string",
+        "name": "comparison_specs",
+        "label": "Specifications",
+        "model": "spec",
         "multi": true,
-        "model": "spec"
+        "valueType": "string"
       }
     ]
   },
@@ -247,20 +227,20 @@
     "fields": [
       {
         "component": "text",
-        "name": "label",
-        "label": "Spec label",
+        "name": "spec_label",
+        "label": "Specification Label",
         "valueType": "string"
       },
       {
         "component": "text",
-        "name": "leftValue",
-        "label": "Left value",
+        "name": "spec_leftValue",
+        "label": "Left Value",
         "valueType": "string"
       },
       {
         "component": "text",
-        "name": "rightValue",
-        "label": "Right value",
+        "name": "spec_rightValue",
+        "label": "Right Value",
         "valueType": "string"
       }
     ]
