@@ -145,14 +145,14 @@
         },
         {
           "title": "Bike Specification Item",
-          "id": "bike_spec_item",
+          "id": "bikeSpecItem",
           "plugins": {
             "xwalk": {
               "page": {
                 "resourceType": "core/franklin/components/block/v1/block/item",
                 "template": {
                   "name": "Bike Specification Item",
-                  "model": "bike_spec_item",
+                  "model": "bikeSpecItem",
                   "classes": "bike_spec_item"
                 }
               }

@@ -44,7 +44,7 @@
   {
     "id": "compare",
     "components": [
-      "bike_spec_item"
+      "bikeSpecItem"
     ]
   }
 ]

@@ -185,56 +185,50 @@
       {
         "component": "text",
         "valueType": "string",
-        "name": "compare_title",
-        "label": "Comparison Section Title"
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "left_bike_name",
+        "name": "leftBikeName",
         "label": "Left Bike Name"
       },
       {
         "component": "reference",
         "valueType": "string",
-        "name": "left_bike_image",
+        "name": "leftBikeImage",
         "label": "Left Bike Image",
         "multi": false
       },
       {
         "component": "text",
         "valueType": "string",
-        "name": "right_bike_name",
+        "name": "rightBikeName",
         "label": "Right Bike Name"
       },
       {
         "component": "reference",
         "valueType": "string",
-        "name": "right_bike_image",
+        "name": "rightBikeImage",
         "label": "Right Bike Image",
         "multi": false
       }
     ]
   },
   {
-    "id": "bike_spec_item",
+    "id": "bikeSpecItem",
     "fields": [
       {
         "component": "text",
         "valueType": "string",
-        "name": "spec_label",
+        "name": "specLabel",
         "label": "Specification Label (e.g. Fuel Tank Capacity)"
       },
       {
         "component": "text",
         "valueType": "string",
-        "name": "left_bike_value",
+        "name": "leftValue",
         "label": "Left Bike Specification Value"
       },
       {
         "component": "text",
         "valueType": "string",
-        "name": "right_bike_value",
+        "name": "rightValue",
         "label": "Right Bike Specification Value"
       }
     ]
