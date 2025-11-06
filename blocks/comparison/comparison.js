@@ -1,4 +1,21 @@
+function resolveImage(ref) {
+  if (!ref) return '';
+  if (typeof ref === 'string') return ref;
+  if (Array.isArray(ref)) return ref.length ? resolveImage(ref[0]) : '';
+  if (typeof ref === 'object') {
+    if (typeof ref.path === 'string') return ref.path;
+    if (typeof ref.src === 'string') return ref.src;
+    if (ref.asset) {
+      if (typeof ref.asset === 'string') return ref.asset;
+      if (ref.asset && typeof ref.asset.path === 'string') return ref.asset.path;
+    }
+    if (typeof ref.url === 'string') return ref.url;
+  }
+  return '';
+}
+
 export default function decorate(block) {
+  // ensure base classes exist
   block.classList.add('block', 'comparison');
 
   // try parse JSON model if present
@@ -19,29 +36,16 @@ export default function decorate(block) {
     || 'Compare models';
 
   const imgs = Array.from(block.querySelectorAll('img'));
-  const leftSrc = (model && model.leftImage) || (imgs[0] && imgs[0].src) || '';
-  const rightSrc = (model && model.rightImage)
+  const leftSrc = resolveImage(model && model.leftImage) || (imgs[0] && imgs[0].src) || '';
+  const rightSrc = resolveImage(model && model.rightImage)
     || (imgs[1] && imgs[1].src)
     || (imgs[0] && imgs[0].src)
     || '';
 
-  // static spec rows (match screenshot)
-  const staticSpecs = [
-    { label: 'Fuel Tank Capacity', left: '9.8 Litre', right: '9.6 Litre' },
-    { label: 'Height (mm)', left: '1052', right: '1045' },
-    { label: 'Length (mm)', left: '2000', right: '1965' },
-    {
-      label: 'Adjustable Hydraulic Shock Absorbers',
-      left: '5-step',
-      right: '2-step',
-    },
-    { label: 'Colour/Graphic Options', left: '11', right: '5' },
-  ];
-
   // rebuild DOM
   block.innerHTML = '';
 
-  const titleEl = document.createElement('div');
+  const titleEl = document.createElement('h2');
   titleEl.className = 'comparison-title';
   titleEl.textContent = title;
   block.appendChild(titleEl);
@@ -81,56 +85,12 @@ export default function decorate(block) {
   vehicleTitles.appendChild(vtRight);
   center.appendChild(vehicleTitles);
 
-  // specs
+  // specs (authorable via model.specs)
   const specsWrap = document.createElement('div');
   specsWrap.className = 'comparison-specs';
-  staticSpecs.forEach((s) => {
-    const rowEl = document.createElement('div');
-    rowEl.className = 'comparison-spec-row';
-
-    const leftCell = document.createElement('div');
-    leftCell.className = 'left-cell';
-    const leftVal = document.createElement('div');
-    // add comparison-value class so CSS accent selectors match
-    leftVal.className = 'comparison-value left-value';
-    leftVal.textContent = s.left;
-    leftCell.appendChild(leftVal);
-
-    const labelCell = document.createElement('div');
-    labelCell.className = 'label-cell';
-    const lbl = document.createElement('div');
-    lbl.className = 'spec-label';
-    lbl.textContent = s.label;
-    labelCell.appendChild(lbl);
-
-    const rightCell = document.createElement('div');
-    rightCell.className = 'right-cell';
-    const rightVal = document.createElement('div');
-    rightVal.className = 'comparison-value right-value';
-    rightVal.textContent = s.right;
-    rightCell.appendChild(rightVal);
-
-    rowEl.appendChild(leftCell);
-    rowEl.appendChild(labelCell);
-    rowEl.appendChild(rightCell);
-    specsWrap.appendChild(rowEl);
-  });
-  center.appendChild(specsWrap);
-
-  // optional: render description from model if provided
-  const descriptionHTML = (model && model.descriptionHTML) || '';
-  if (descriptionHTML) {
-    const desc = document.createElement('div');
-    desc.className = 'comparison-description';
-    desc.innerHTML = descriptionHTML;
-    center.appendChild(desc);
-  }
-
-  // optional: render additional specs from model if present (array of {label,leftValue,rightValue})
-  const extraSpecs = (model && Array.isArray(model.specs) && model.specs) || [];
-  if (extraSpecs.length) {
-    // append to the existing specsWrap
-    extraSpecs.forEach((s) => {
+  const authoredSpecs = (model && Array.isArray(model.specs) && model.specs) || [];
+  if (authoredSpecs.length) {
+    authoredSpecs.forEach((s) => {
       const rowEl = document.createElement('div');
       rowEl.className = 'comparison-spec-row';
 
@@ -160,7 +120,28 @@ export default function decorate(block) {
       rowEl.appendChild(rightCell);
       specsWrap.appendChild(rowEl);
     });
+  } else {
+    const rowEl = document.createElement('div');
+    rowEl.className = 'comparison-spec-row';
+    rowEl.innerHTML = `
+      <div class="left-cell"><div class="comparison-value left-value"></div></div>
+      <div class="label-cell"><div class="spec-label">No specifications available</div></div>
+      <div class="right-cell"><div class="comparison-value right-value"></div></div>
+    `;
+    specsWrap.appendChild(rowEl);
   }
+  center.appendChild(specsWrap);
+
+  // optional: render description from model if provided
+  const descriptionHTML = (model && model.descriptionHTML) || '';
+  if (descriptionHTML) {
+    const desc = document.createElement('div');
+    desc.className = 'comparison-description';
+    desc.innerHTML = descriptionHTML;
+    center.appendChild(desc);
+  }
+
+  // remove legacy extraSpecs path; the above model.specs covers authoring
 
   row.appendChild(center);
 
