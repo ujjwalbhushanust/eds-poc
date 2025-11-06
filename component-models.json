@@ -184,61 +184,53 @@
     "fields": [
       {
         "component": "text",
-        "name": "product_title",
+        "name": "title",
         "label": "Title",
         "valueType": "string"
       },
       {
         "component": "richtext",
-        "name": "product_descriptionHTML",
+        "name": "descriptionHTML",
         "label": "Description",
         "valueType": "string"
       },
       {
         "component": "reference",
-        "name": "product_leftImage",
+        "name": "leftImage",
         "label": "Left image",
         "valueType": "string",
         "multi": false
       },
       {
         "component": "text",
-        "name": "product_leftAlt",
+        "name": "leftAlt",
         "label": "Left image alt text",
         "valueType": "string"
       },
       {
         "component": "reference",
-        "name": "product_rightImage",
+        "name": "rightImage",
         "label": "Right image",
         "valueType": "string",
         "multi": false
       },
       {
         "component": "text",
-        "name": "product_rightAlt",
+        "name": "rightAlt",
         "label": "Right image alt text",
         "valueType": "string"
       },
       {
         "component": "text",
-        "name": "product_leftTitle",
+        "name": "leftTitle",
         "label": "Left vehicle title",
         "valueType": "string"
       },
       {
         "component": "text",
-        "name": "product_rightTitle",
+        "name": "rightTitle",
         "label": "Right vehicle title",
         "valueType": "string"
-      },
-      {
-        "component": "reference",
-        "name": "product_specs",
-        "label": "Specs",
-        "valueType": "string",
-        "multi": true,
-        "model": "spec"
       }
     ]
   },
