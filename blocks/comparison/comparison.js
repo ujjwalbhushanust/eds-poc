@@ -1,5 +1,5 @@
 export default function decorate(block) {
-  // small DOM helper factory (similar to dom-helpers.js used in reference)
+  // Small DOM helpers, mirroring the reference code style
   const el = (tag, attrs, ...children) => {
     const node = document.createElement(tag);
     if (attrs) {
@@ -20,167 +20,130 @@ export default function decorate(block) {
     return node;
   };
   const div = (a, ...c) => el('div', a, ...c);
+  const span = (a, ...c) => el('span', a, ...c);
+  const a$ = (a, ...c) => el('a', a, ...c);
   const h2 = (a, ...c) => el('h2', a, ...c);
-  const img = (a) => {
-    const n = document.createElement('img');
-    if (a) {
-      if (a.src) n.src = a.src;
-      if (a.alt) n.alt = a.alt;
-      if (a.class) n.className = a.class;
-    }
-    return n;
-  };
+  const i = (a, ...c) => el('i', a, ...c);
 
-  block.classList.add('block', 'comparison');
+  // Read the current block children to transform authoring markup
+  const props = Array.from(block.children).map((ele) => ele.children);
+  const containerDetails = props[0] && props[0][0]
+    ? Array.from(props[0][0].querySelectorAll('p'))
+    : [];
+  const specsDetails = props.slice(1);
 
-  // read model data (Franklin runtime). In authoring the block data may use
-  // different keys; try multiple fallbacks (children, specs, product_ prefixed keys).
-  const model = (window.getBlockData && window.getBlockData(block)) || {};
-
-  // (no helper functions required here)
-
-  // fallback: try to parse existing markup if model is empty
-  const fromMarkup = () => {
-    const heading = block.querySelector('h1,h2,h3,h4,h5,h6');
-    const imgs = Array.from(block.querySelectorAll('img'));
-    return {
-      title: (heading && heading.textContent.trim()) || '',
-      leftImage: imgs[0] && imgs[0].src,
-      rightImage: imgs[1] && imgs[1].src,
-    };
-  };
-
-  const data = { ...fromMarkup(), ...(model || {}) };
-
-  // collect specs from multiple possible locations:
-  //  - model.children (Franklin block children)
-  //  - data.children
-  //  - model.specs or data.specs (if provided as array)
-  //  - fallback: parse direct child markup
-  let specs = [];
-  if (Array.isArray(model.children) && model.children.length) {
-    specs = model.children.slice();
-  } else if (Array.isArray(data.children) && data.children.length) {
-    specs = data.children.slice();
-  } else if (Array.isArray(model.specs) && model.specs.length) {
-    specs = model.specs.slice();
-  } else if (Array.isArray(data.specs) && data.specs.length) {
-    specs = data.specs.slice();
-  } else {
-    // try to read children as spec items: each child block with label/leftValue/rightValue
-    const children = Array.from(block.children || []);
-    children.forEach((ch) => {
-      let label = null;
-      let left = null;
-      let right = null;
-      if (ch.querySelector) {
-        const qLabel = ch.querySelector('.label, .spec-label');
-        if (qLabel) label = qLabel.textContent.trim();
-        const qLeft = ch.querySelector('.left, .left-value');
-        if (qLeft) left = qLeft.textContent.trim();
-        const qRight = ch.querySelector('.right, .right-value');
-        if (qRight) right = qRight.textContent.trim();
-      }
-      if (label || left || right) {
-        specs.push({
-          label,
-          leftValue: left,
-          rightValue: right,
-        });
-      }
-    });
-  }
-
-  const flattenSpecs = [];
-  specs.forEach((s) => {
-    if (s && Array.isArray(s.specs) && s.specs.length) {
-      s.specs.forEach((ss) => {
-        if (ss) flattenSpecs.push(ss);
-      });
-    } else if (s && (s.label || s.leftValue || s.rightValue)) {
-      flattenSpecs.push(s);
-    }
-  });
-  specs = flattenSpecs;
-
-  // clear and build new DOM using helpers
+  // Clear the block and build the tabbed UI like the reference
   block.innerHTML = '';
 
-  // title
-  const titleEl = h2(
-    { class: 'comparison-title' },
-    data.title || 'COMPARE MODELS',
+  // Title (use first paragraph in containerDetails if available)
+  const titleText = (containerDetails[0] && containerDetails[0].textContent.trim())
+    || 'COMPARE MODELS';
+
+  block.append(
+    h2({ class: 'comparison-title' }, titleText),
+    div({ class: 'specifications-wrapper' }, div({ class: 'specs-header' })),
   );
 
-  // left image
-  const leftCol = div({ class: 'comparison-image' });
-  if (data.leftImage) {
-    leftCol.appendChild(
-      img({
-        src: data.leftImage,
-        alt: data.leftAlt || data.leftTitle || 'Left image',
-      }),
-    );
-  }
-
-  // right image
-  const rightCol = div({ class: 'comparison-image' });
-  if (data.rightImage) {
-    rightCol.appendChild(
-      img({
-        src: data.rightImage,
-        alt: data.rightAlt || data.rightTitle || 'Right image',
-      }),
-    );
-  }
-
-  // center content
-  const vehicleTitles = div(
-    { class: 'vehicle-titles' },
-    div({ class: 'comparison-vehicle-title left' }, data.leftTitle || 'Left'),
-    div(),
-    div({ class: 'comparison-vehicle-title right' }, data.rightTitle || 'Right'),
-  );
-
-  const description = data.product_descriptionHTML || data.descriptionHTML || '';
-  const descEl = description
-    ? div({ class: 'comparison-description', html: description })
+  const bikeBannerImage = containerDetails[2] && containerDetails[2].querySelector
+    ? containerDetails[2].querySelector('picture')
     : null;
 
-  // specs container
-  const specsWrap = div({ class: 'comparison-specs' });
+  const specsHeader = block.querySelector('.specs-header');
+  specsHeader.innerHTML = '';
+  const specsBody = div({ class: 'specs-body' });
 
-  specs.forEach((s) => {
-    const row = div(
-      { class: 'comparison-spec-row' },
-      div(
-        { class: 'left-cell' },
-        div(
-          { class: 'comparison-value left-value' },
-          s.leftValue || s.left || '',
-        ),
-      ),
-      div({ class: 'label-cell' }, div({ class: 'spec-label' }, s.label || '')),
-      div(
-        { class: 'right-cell' },
-        div(
-          { class: 'comparison-value right-value' },
-          s.rightValue || s.right || '',
-        ),
+  // Build spec tabs from authored props (each prop represents a spec item)
+  specsDetails.forEach((prop, idx) => {
+    const paragraphs = prop[0] ? Array.from(prop[0].querySelectorAll('p')) : [];
+    const firstP = paragraphs[0] || { textContent: '' };
+    const secondP = paragraphs[1] || { textContent: `spec-${idx}` };
+
+    const classList = idx === 0 ? 'spec-item active' : 'spec-item';
+    const articleClassList = idx === 0 ? 'specs-article active' : 'specs-article';
+
+    const specId = secondP.textContent
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g, '-');
+
+    const specsArticle = div({ class: articleClassList, id: specId });
+    const specsContent = div({ class: 'specs-main' });
+
+    const specItem = div(
+      { class: classList },
+      a$(
+        { href: specId },
+        i({ class: `spec-icon hero-icon ${firstP.textContent.trim()}` }),
+        div({ class: 'spec-title' }, secondP.textContent.trim()),
       ),
     );
-    specsWrap.appendChild(row);
+
+    specsHeader.appendChild(specItem);
+
+    // optional download/share
+    if (containerDetails[3] && containerDetails[3].href) {
+      const moreWrapper = div({ class: 'more-info-wrapper' });
+      const downloadLink = a$(
+        {
+          href: containerDetails[3].href,
+          target: '_blank',
+          rel: 'noopener noreferrer',
+        },
+        'Download Brochure',
+        span({ class: 'hero-icon download-icon' }),
+      );
+      const shareLink = span({
+        class: 'share-link hero-icon share-icon',
+        tabindex: '0',
+        title: 'Share this link',
+      });
+      moreWrapper.appendChild(downloadLink);
+      moreWrapper.appendChild(shareLink);
+      specsArticle.appendChild(moreWrapper);
+    }
+
+    // append authored content (image/text blocks) into the article
+    Array.from(prop)
+      .slice(1)
+      .forEach((child, index) => {
+        const classes = ['specs-image', 'specs-text'];
+        specsContent.appendChild(
+          div({ class: classes[index] }, child.cloneNode(true)),
+        );
+      });
+
+    if (bikeBannerImage) {
+      specsContent.appendChild(
+        div({ class: 'bike-banner' }, bikeBannerImage.cloneNode(true)),
+      );
+    }
+
+    specsArticle.appendChild(specsContent);
+    specsBody.appendChild(specsArticle);
   });
 
-  const center = div(
-    { class: 'comparison-content' },
-    vehicleTitles,
-    descEl,
-    specsWrap,
-  );
+  // Put the specs body into the wrapper
+  const specsWrapper = block.querySelector('.specifications-wrapper');
+  specsWrapper.appendChild(specsBody);
 
-  const row = div({ class: 'comparison-row' }, leftCol, center, rightCol);
-
-  block.appendChild(titleEl);
-  block.appendChild(row);
+  // Wire up tab click behaviour
+  const specItems = block.querySelectorAll('.spec-item a');
+  specItems.forEach((link) => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      // remove active
+      block
+        .querySelectorAll('.spec-item')
+        .forEach((it) => it.classList.remove('active'));
+      block
+        .querySelectorAll('.specs-article')
+        .forEach((art) => art.classList.remove('active'));
+      // activate clicked
+      const clickedItem = link.closest('.spec-item');
+      if (clickedItem) clickedItem.classList.add('active');
+      const targetId = link.getAttribute('href');
+      const targetArticle = block.querySelector(`.specs-article#${targetId}`);
+      if (targetArticle) targetArticle.classList.add('active');
+    });
+  });
 }
