@@ -1,210 +1,179 @@
 export default function decorate(block) {
-  const model = (window.getBlockData && window.getBlockData(block)) || {};
+  block.classList.add('block', 'comparison');
 
-  // resolve image helper (string | object | array)
-  const resolveImage = (v) => {
-    if (!v) return '';
-    if (typeof v === 'string') return v;
-    if (Array.isArray(v) && v.length) return resolveImage(v[0]);
-    if (typeof v === 'object') return v.src || v.url || v.path || v.fileReference || v['@id'] || '';
-    return '';
-  };
-
-  // Prefer grouped model fields (comparison.content, leftVehicle, rightVehicle, specs)
-  // but keep backward-compatibility with older flat keys
-  const content = model.content && typeof model.content === 'object'
-    ? model.content
-    : {
-      title: model.comparison_title || model.title || '',
-      descriptionHTML:
-            model.descriptionHTML || model.comparison_description || '',
-    };
-
-  const leftVehicle = model.leftVehicle && typeof model.leftVehicle === 'object'
-    ? model.leftVehicle
-    : {
-      title:
-            model.comparison_leftTitle
-            || model.leftTitle
-            || model.left_name
-            || '',
-      image: model.comparison_leftImage || model.leftImage || '',
-      alt: model.leftAlt || '',
-    };
-
-  const rightVehicle = model.rightVehicle && typeof model.rightVehicle === 'object'
-    ? model.rightVehicle
-    : {
-      title:
-            model.comparison_rightTitle
-            || model.rightTitle
-            || model.right_name
-            || '',
-      image: model.comparison_rightImage || model.rightImage || '',
-      alt: model.rightAlt || '',
-    };
-
-  // specs can be model.specs (new) or model.comparison_specs (old)
-  let specs = [];
-  if (Array.isArray(model.specs)) {
-    specs = model.specs;
-  } else if (Array.isArray(model.comparison_specs)) {
-    specs = model.comparison_specs;
+  // try parse JSON model if present
+  let model = null;
+  const jsonScript = block.querySelector('script[type="application/json"]');
+  if (jsonScript) {
+    try {
+      model = JSON.parse(jsonScript.textContent || '{}');
+    } catch (e) {
+      model = null;
+    }
   }
 
-  // Build specs HTML rows
-  const specsHtml = specs.length
-    ? specs
-      .map((s) => {
-        const label = s.label || s.spec_label || '';
-        const left = s.leftValue || s.spec_leftValue || s.left || '';
-        const right = s.rightValue || s.spec_rightValue || s.right || '';
-        return `
-        <div class="spec-row">
-          <div class="left-value">${left}</div>
-          <div class="label">${label}</div>
-          <div class="right-value">${right}</div>
-        </div>
-      `;
-      })
-      .join('')
-    : '';
+  // read title and images from model or from first elements
+  const heading = block.querySelector('h1,h2,h3,h4,h5,h6');
+  const title = (model && model.title)
+    || (heading && heading.textContent.trim())
+    || 'Compare models';
 
-  const resolvedLeft = resolveImage(leftVehicle.image);
-  const resolvedRight = resolveImage(rightVehicle.image);
+  const imgs = Array.from(block.querySelectorAll('img'));
+  const leftSrc = (model && model.leftImage) || (imgs[0] && imgs[0].src) || '';
+  const rightSrc = (model && model.rightImage)
+    || (imgs[1] && imgs[1].src)
+    || (imgs[0] && imgs[0].src)
+    || '';
 
-  // Try to build a tabbed UI (specifications-wrapper) from authored child content
-  const authoredRows = Array.from(block.children || []);
-  if (authoredRows.length) {
-    // capture authored structure then clear block
-    const sections = authoredRows.map((row) => Array.from(row.children || []));
-    block.innerHTML = '';
+  // static spec rows (match screenshot)
+  const staticSpecs = [
+    { label: 'Fuel Tank Capacity', left: '9.8 Litre', right: '9.6 Litre' },
+    { label: 'Height (mm)', left: '1052', right: '1045' },
+    { label: 'Length (mm)', left: '2000', right: '1965' },
+    {
+      label: 'Adjustable Hydraulic Shock Absorbers',
+      left: '5-step',
+      right: '2-step',
+    },
+    { label: 'Colour/Graphic Options', left: '11', right: '5' },
+  ];
 
-    // title
-    const titleEl = document.createElement('h2');
-    titleEl.className = 'comparison-title';
-    titleEl.textContent = content.title || 'Compare Models';
-    block.appendChild(titleEl);
+  // rebuild DOM
+  block.innerHTML = '';
 
-    // wrapper
-    const wrapper = document.createElement('div');
-    wrapper.className = 'specifications-wrapper';
-    const header = document.createElement('div');
-    header.className = 'specs-header';
-    const body = document.createElement('div');
-    body.className = 'specs-body';
+  const titleEl = document.createElement('div');
+  titleEl.className = 'comparison-title';
+  titleEl.textContent = title;
+  block.appendChild(titleEl);
 
-    // The first authored column often carries meta (like bike banner or links)
-    // Specs start from the second column onward
-    const specsCols = sections.slice(1);
+  const row = document.createElement('div');
+  row.className = 'comparison-row';
 
-    specsCols.forEach((col, idx) => {
-      const firstCell = col[0] || null;
-      const paragraphs = firstCell
-        ? Array.from(firstCell.querySelectorAll('p'))
-        : [];
-      const iconText = (paragraphs[0] && paragraphs[0].textContent.trim()) || '';
-      const titleText = (paragraphs[1] && paragraphs[1].textContent.trim()) || `spec-${idx}`;
-      const specId = titleText.toLowerCase().replace(/\s+/g, '-');
+  // left image
+  const leftCol = document.createElement('div');
+  leftCol.className = 'comparison-image';
+  if (leftSrc) {
+    const imgL = document.createElement('img');
+    imgL.src = leftSrc;
+    imgL.alt = (model && model.leftAlt) || 'Left image';
+    leftCol.appendChild(imgL);
+  }
+  row.appendChild(leftCol);
 
-      // header item
-      const item = document.createElement('div');
-      item.className = idx === 0 ? 'spec-item active' : 'spec-item';
-      const a = document.createElement('a');
-      a.setAttribute('href', specId);
-      const icon = document.createElement('i');
-      icon.className = `spec-icon hero-icon ${iconText}`.trim();
-      const t = document.createElement('div');
-      t.className = 'spec-title';
-      t.textContent = titleText;
-      a.appendChild(icon);
-      a.appendChild(t);
-      item.appendChild(a);
-      header.appendChild(item);
+  // center content
+  const center = document.createElement('div');
+  // match CSS which targets .comparison-content
+  center.className = 'comparison-content';
 
-      // article body
-      const article = document.createElement('div');
-      article.className = idx === 0 ? 'specs-article active' : 'specs-article';
-      article.id = specId;
-      const main = document.createElement('div');
-      main.className = 'specs-main';
+  // vehicle titles (static colored headings)
+  const vehicleTitles = document.createElement('div');
+  vehicleTitles.className = 'vehicle-titles';
+  const vtLeft = document.createElement('div');
+  // CSS expects .comparison-vehicle-title for accent styles
+  vtLeft.className = 'comparison-vehicle-title left';
+  vtLeft.textContent = (model && model.leftTitle) || 'SPLENDOR+';
+  const vtSpacer = document.createElement('div');
+  const vtRight = document.createElement('div');
+  vtRight.className = 'comparison-vehicle-title right';
+  vtRight.textContent = (model && model.rightTitle) || 'HF DELUXE';
+  vehicleTitles.appendChild(vtLeft);
+  vehicleTitles.appendChild(vtSpacer);
+  vehicleTitles.appendChild(vtRight);
+  center.appendChild(vehicleTitles);
 
-      // copy remaining cells into the article
-      col.slice(1).forEach((cell, i) => {
-        const slot = document.createElement('div');
-        const slotClasses = ['specs-image', 'specs-text']; // avoid nested ternary
-        slot.className = slotClasses[i] || '';
-        slot.appendChild(cell.cloneNode(true));
-        main.appendChild(slot);
-      });
+  // specs
+  const specsWrap = document.createElement('div');
+  specsWrap.className = 'comparison-specs';
+  staticSpecs.forEach((s) => {
+    const rowEl = document.createElement('div');
+    rowEl.className = 'comparison-spec-row';
 
-      article.appendChild(main);
-      body.appendChild(article);
-    });
+    const leftCell = document.createElement('div');
+    leftCell.className = 'left-cell';
+    const leftVal = document.createElement('div');
+    // add comparison-value class so CSS accent selectors match
+    leftVal.className = 'comparison-value left-value';
+    leftVal.textContent = s.left;
+    leftCell.appendChild(leftVal);
 
-    wrapper.appendChild(header);
-    wrapper.appendChild(body);
-    block.appendChild(wrapper);
+    const labelCell = document.createElement('div');
+    labelCell.className = 'label-cell';
+    const lbl = document.createElement('div');
+    lbl.className = 'spec-label';
+    lbl.textContent = s.label;
+    labelCell.appendChild(lbl);
 
-    // tab wiring
-    block.querySelectorAll('.spec-item a').forEach((link) => {
-      link.addEventListener('click', (e) => {
-        e.preventDefault();
-        const id = link.getAttribute('href');
-        block
-          .querySelectorAll('.spec-item')
-          .forEach((el) => el.classList.remove('active'));
-        block
-          .querySelectorAll('.specs-article')
-          .forEach((el) => el.classList.remove('active'));
-        const li = link.closest('.spec-item');
-        if (li) li.classList.add('active');
-        const panel = block.querySelector(`.specs-article#${id}`);
-        if (panel) panel.classList.add('active');
-      });
-    });
+    const rightCell = document.createElement('div');
+    rightCell.className = 'right-cell';
+    const rightVal = document.createElement('div');
+    rightVal.className = 'comparison-value right-value';
+    rightVal.textContent = s.right;
+    rightCell.appendChild(rightVal);
 
-    return;
+    rowEl.appendChild(leftCell);
+    rowEl.appendChild(labelCell);
+    rowEl.appendChild(rightCell);
+    specsWrap.appendChild(rowEl);
+  });
+  center.appendChild(specsWrap);
+
+  // optional: render description from model if provided
+  const descriptionHTML = (model && model.descriptionHTML) || '';
+  if (descriptionHTML) {
+    const desc = document.createElement('div');
+    desc.className = 'comparison-description';
+    desc.innerHTML = descriptionHTML;
+    center.appendChild(desc);
   }
 
-  // Fallback: simple three-column comparison grid rendered from model data
-  block.innerHTML = `
-    <h2 class="comparison-title">${content.title || 'Compare Models'}</h2>
-    <div class="comparison-grid">
-      <div class="bike-column left">
-        <h3 class="bike-title left">${leftVehicle.title || ''}</h3>
-        ${
-  resolvedLeft
-    ? `<img src="${resolvedLeft}" alt="${
-      leftVehicle.alt || leftVehicle.title || ''
-    }" />`
-    : ''
-}
-      </div>
+  // optional: render additional specs from model if present (array of {label,leftValue,rightValue})
+  const extraSpecs = (model && Array.isArray(model.specs) && model.specs) || [];
+  if (extraSpecs.length) {
+    // append to the existing specsWrap
+    extraSpecs.forEach((s) => {
+      const rowEl = document.createElement('div');
+      rowEl.className = 'comparison-spec-row';
 
-      <div class="specs-column">
-        ${
-  specsHtml
-          || `
-          <div class="spec-row">
-            <div class="left-value"></div>
-            <div class="label">No specifications available</div>
-            <div class="right-value"></div>
-          </div>
-        `
-}
-      </div>
+      const leftCell = document.createElement('div');
+      leftCell.className = 'left-cell';
+      const leftVal = document.createElement('div');
+      leftVal.className = 'comparison-value left-value';
+      leftVal.textContent = s.leftValue || '';
+      leftCell.appendChild(leftVal);
 
-      <div class="bike-column right">
-        <h3 class="bike-title right">${rightVehicle.title || ''}</h3>
-        ${
-  resolvedRight
-    ? `<img src="${resolvedRight}" alt="${
-      rightVehicle.alt || rightVehicle.title || ''
-    }" />`
-    : ''
-}
-      </div>
-    </div>
-  `;
+      const labelCell = document.createElement('div');
+      labelCell.className = 'label-cell';
+      const lbl = document.createElement('div');
+      lbl.className = 'spec-label';
+      lbl.textContent = s.label || '';
+      labelCell.appendChild(lbl);
+
+      const rightCell = document.createElement('div');
+      rightCell.className = 'right-cell';
+      const rightVal = document.createElement('div');
+      rightVal.className = 'comparison-value right-value';
+      rightVal.textContent = s.rightValue || '';
+      rightCell.appendChild(rightVal);
+
+      rowEl.appendChild(leftCell);
+      rowEl.appendChild(labelCell);
+      rowEl.appendChild(rightCell);
+      specsWrap.appendChild(rowEl);
+    });
+  }
+
+  row.appendChild(center);
+
+  // right image
+  const rightCol = document.createElement('div');
+  rightCol.className = 'comparison-image';
+  if (rightSrc) {
+    const imgR = document.createElement('img');
+    imgR.src = rightSrc;
+    imgR.alt = (model && model.rightAlt) || 'Right image';
+    rightCol.appendChild(imgR);
+  }
+  row.appendChild(rightCol);
+
+  block.appendChild(row);
 }
