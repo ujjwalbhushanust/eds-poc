@@ -42,9 +42,9 @@
     ]
   },
   {
-    "id": "comparison-specs",
+    "id": "comparison",
     "components": [
-      "spec"
+      "specGroup"
     ]
   }
 ]
