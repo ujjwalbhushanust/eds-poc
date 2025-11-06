@@ -180,45 +180,80 @@
     ]
   },
   {
-    "id": "comparison",
+    "id": "comparison-content",
     "fields": [
       {
         "component": "text",
-        "name": "comparison_title",
+        "name": "title",
         "label": "Title",
         "valueType": "string"
       },
       {
+        "component": "richtext",
+        "name": "descriptionHTML",
+        "label": "Description (HTML)",
+        "valueType": "string"
+      }
+    ]
+  },
+  {
+    "id": "vehicle",
+    "fields": [
+      {
+        "component": "reference",
+        "name": "image",
+        "label": "Vehicle image",
+        "valueType": "string",
+        "multi": false
+      },
+      {
         "component": "text",
-        "name": "comparison_leftTitle",
-        "label": "Left Bike Name",
-        "valueType": "string"
-      },
-      {
-        "component": "reference",
-        "name": "comparison_leftImage",
-        "label": "Left Bike Image",
+        "name": "alt",
+        "label": "Image alt text",
         "valueType": "string"
       },
       {
         "component": "text",
-        "name": "comparison_rightTitle",
-        "label": "Right Bike Name",
+        "name": "title",
+        "label": "Vehicle title",
         "valueType": "string"
+      }
+    ]
+  },
+  {
+    "id": "comparison",
+    "fields": [
+      {
+        "component": "reference",
+        "name": "content",
+        "label": "Content",
+        "valueType": "string",
+        "multi": false,
+        "model": "comparison-content"
       },
       {
         "component": "reference",
-        "name": "comparison_rightImage",
-        "label": "Right Bike Image",
-        "valueType": "string"
+        "name": "leftVehicle",
+        "label": "Left vehicle",
+        "valueType": "string",
+        "multi": false,
+        "model": "vehicle"
       },
       {
         "component": "reference",
-        "name": "comparison_specs",
+        "name": "rightVehicle",
+        "label": "Right vehicle",
+        "valueType": "string",
+        "multi": false,
+        "model": "vehicle"
+      },
+      {
+        "component": "reference",
+        "name": "specs",
         "label": "Specifications",
-        "model": "spec",
+        "valueType": "string",
         "multi": true,
-        "valueType": "string"
+        "model": "spec"
       }
     ]
   },
@@ -227,19 +262,19 @@
     "fields": [
       {
         "component": "text",
-        "name": "spec_label",
+        "name": "label",
         "label": "Specification Label",
         "valueType": "string"
       },
       {
         "component": "text",
-        "name": "spec_leftValue",
+        "name": "leftValue",
         "label": "Left Value",
         "valueType": "string"
       },
       {
         "component": "text",
-        "name": "spec_rightValue",
+        "name": "rightValue",
         "label": "Right Value",
         "valueType": "string"
       }
