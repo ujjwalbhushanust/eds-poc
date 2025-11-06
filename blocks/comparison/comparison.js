@@ -1,4 +1,5 @@
 export default function decorate(block) {
+  console.log(block);
   const model = (window.getBlockData && window.getBlockData(block)) || {};
 
   // resolve image helper (string | object | array)
@@ -60,30 +61,28 @@ export default function decorate(block) {
   const resolvedLeft = resolveImage(leftVehicle.image);
   const resolvedRight = resolveImage(rightVehicle.image);
 
-  // Render grid matching your DOM/classes
+  // Render grid directly inside the existing block (no nested .comparison block)
   block.innerHTML = `
-    <div class="comparison block" data-block-name="comparison" data-block-status="loaded">
-      <h2 class="comparison-title">${content.title || 'Compare Models'}</h2>
-      <div class="comparison-grid">
-        <div class="bike-column left">
-          <h3 class="bike-title left">${leftVehicle.title || ''}</h3>
-          ${resolvedLeft ? `<img src="${resolvedLeft}" alt="${leftVehicle.alt || leftVehicle.title || ''}" />` : ''}
-        </div>
+    <h2 class="comparison-title">${content.title || 'Compare Models'}</h2>
+    <div class="comparison-grid">
+      <div class="bike-column left">
+        <h3 class="bike-title left">${leftVehicle.title || ''}</h3>
+        ${resolvedLeft ? `<img src="${resolvedLeft}" alt="${leftVehicle.alt || leftVehicle.title || ''}" />` : ''}
+      </div>
 
-        <div class="specs-column">
-          ${specsHtml || `
-            <div class="spec-row">
-              <div class="left-value"></div>
-              <div class="label">No specifications available</div>
-              <div class="right-value"></div>
-            </div>
-          `}
-        </div>
+      <div class="specs-column">
+        ${specsHtml || `
+          <div class="spec-row">
+            <div class="left-value"></div>
+            <div class="label">No specifications available</div>
+            <div class="right-value"></div>
+          </div>
+        `}
+      </div>
 
-        <div class="bike-column right">
-          <h3 class="bike-title right">${rightVehicle.title || ''}</h3>
-          ${resolvedRight ? `<img src="${resolvedRight}" alt="${rightVehicle.alt || rightVehicle.title || ''}" />` : ''}
-        </div>
+      <div class="bike-column right">
+        <h3 class="bike-title right">${rightVehicle.title || ''}</h3>
+        ${resolvedRight ? `<img src="${resolvedRight}" alt="${rightVehicle.alt || rightVehicle.title || ''}" />` : ''}
       </div>
     </div>
   `;
