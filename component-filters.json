@@ -42,10 +42,9 @@
     ]
   },
   {
-    "id": "comparison",
+    "id": "compare",
     "components": [
-      "product",
-      "specGroup"
+      "bike_spec_item"
     ]
   }
 ]
