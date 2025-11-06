@@ -11,11 +11,11 @@
               "name": "Comparison",
               "model": "comparison",
               "filter": "comparison",
-              "title": "COMPARE YOUR SPLENDOR+",
-              "leftImage": "https://via.placeholder.com/360x360?text=Left",
-              "rightImage": "https://via.placeholder.com/360x360?text=Right",
-              "leftTitle": "SPLENDOR+",
-              "rightTitle": "HF DELUXE"
+              "content_title": "COMPARE YOUR SPLENDOR+",
+              "left_image": "https://via.placeholder.com/360x360?text=Left",
+              "right_image": "https://via.placeholder.com/360x360?text=Right",
+              "left_title": "SPLENDOR+",
+              "right_title": "HF DELUXE"
             }
           }
         }
@@ -43,51 +43,51 @@
       "fields": [
         {
           "component": "text",
-          "name": "title",
+          "name": "content_title",
           "label": "Title",
           "valueType": "string"
         },
         {
           "component": "richtext",
-          "name": "descriptionHTML",
+          "name": "content_descriptionHTML",
           "label": "Description",
           "valueType": "string"
         },
         {
           "component": "reference",
-          "name": "leftImage",
+          "name": "left_image",
           "label": "Left image",
           "valueType": "string",
           "multi": false
         },
         {
           "component": "text",
-          "name": "leftAlt",
+          "name": "left_imageAlt",
           "label": "Left image alt text",
           "valueType": "string"
         },
         {
+          "component": "text",
+          "name": "left_title",
+          "label": "Left vehicle title",
+          "valueType": "string"
+        },
+        {
           "component": "reference",
-          "name": "rightImage",
+          "name": "right_image",
           "label": "Right image",
           "valueType": "string",
           "multi": false
         },
         {
           "component": "text",
-          "name": "rightAlt",
+          "name": "right_imageAlt",
           "label": "Right image alt text",
           "valueType": "string"
         },
         {
           "component": "text",
-          "name": "leftTitle",
-          "label": "Left vehicle title",
-          "valueType": "string"
-        },
-        {
-          "component": "text",
-          "name": "rightTitle",
+          "name": "right_title",
           "label": "Right vehicle title",
           "valueType": "string"
         }
