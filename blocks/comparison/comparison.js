@@ -1,49 +1,29 @@
-function resolveImage(ref) {
-  if (!ref) return '';
-  if (typeof ref === 'string') return ref;
-  if (Array.isArray(ref)) return ref.length ? resolveImage(ref[0]) : '';
-  if (typeof ref === 'object') {
-    if (typeof ref.path === 'string') return ref.path;
-    if (typeof ref.src === 'string') return ref.src;
-    if (ref.asset) {
-      if (typeof ref.asset === 'string') return ref.asset;
-      if (ref.asset && typeof ref.asset.path === 'string') return ref.asset.path;
-    }
-    if (typeof ref.url === 'string') return ref.url;
-  }
-  return '';
-}
-
 export default function decorate(block) {
   block.classList.add('block', 'comparison');
 
-  // parse model from embedded JSON (if present)
-  let model = null;
-  const jsonScript = block.querySelector('script[type="application/json"]');
-  if (jsonScript) {
-    try {
-      model = JSON.parse(jsonScript.textContent || '{}');
-    } catch (e) {
-      model = null;
-    }
-  }
+  // snapshot original authored DOM to extract content
+  const source = block.cloneNode(true);
 
-  // values with grouped field names (≤4 cells): content_, left_, right_
-  const heading = block.querySelector('h1,h2,h3,h4,h5,h6');
-  const title = (model && (model.content_title || model.title))
-    || (heading && heading.textContent.trim())
-    || '';
+  // derive title from first heading or paragraph
+  const heading = source.querySelector('h1,h2,h3,h4,h5,h6');
+  const firstP = source.querySelector('p');
+  const title = (heading && heading.textContent.trim())
+    || (firstP && firstP.textContent.trim())
+    || 'Compare models';
 
-  const imgs = Array.from(block.querySelectorAll('img'));
-  const leftSrc = resolveImage(model && (model.left_image || model.leftImage)) || (imgs[0] && imgs[0].src) || '';
-  const rightSrc = resolveImage(model && (model.right_image || model.rightImage))
-    || (imgs[1] && imgs[1].src)
-    || (imgs[0] && imgs[0].src)
-    || '';
-  const leftAlt = (model && (model.left_imageAlt || model.leftAlt)) || 'Left image';
-  const rightAlt = (model && (model.right_imageAlt || model.rightAlt)) || 'Right image';
-  const leftTitle = (model && (model.left_title || model.leftTitle)) || '';
-  const rightTitle = (model && (model.right_title || model.rightTitle)) || '';
+  // derive images (first and last img in authored content)
+  const imgs = Array.from(source.querySelectorAll('img'));
+  const leftImg = imgs[0];
+  const rightImg = imgs.length > 1 ? imgs[imgs.length - 1] : imgs[0];
+  const leftSrc = (leftImg && leftImg.src) || '';
+  const rightSrc = (rightImg && rightImg.src) || '';
+  const leftAlt = (leftImg && leftImg.alt) || 'Left image';
+  const rightAlt = (rightImg && rightImg.alt) || 'Right image';
+
+  // optional vehicle titles (first and last h3 if present)
+  const h3s = Array.from(source.querySelectorAll('h3'));
+  const leftTitle = (h3s[0] && h3s[0].textContent.trim()) || '';
+  const rightTitle = (h3s.length > 1 && h3s[h3s.length - 1].textContent.trim()) || '';
 
   // reset
   block.innerHTML = '';
@@ -51,7 +31,7 @@ export default function decorate(block) {
   // heading like example
   const headingEl = document.createElement('h2');
   headingEl.className = 'block-heading';
-  headingEl.textContent = title || 'Compare models';
+  headingEl.textContent = title;
   block.appendChild(headingEl);
 
   const row = document.createElement('div');
@@ -79,20 +59,45 @@ export default function decorate(block) {
   const specsBody = document.createElement('div');
   specsBody.className = 'specs-body';
 
-  // collect spec items from model.items or model.specs
-  let authoredSpecs = [];
-  if (model && Array.isArray(model.items)) {
-    authoredSpecs = model.items
-      .map((it) => (it && it.model ? it.model : it))
-      .filter((m) => m && (m.label || m.leftValue || m.rightValue));
-  }
-  if (!authoredSpecs.length && model && Array.isArray(model.specs)) {
-    authoredSpecs = model.specs;
-  }
+  // collect spec rows from authored DOM: treat each child row after the first as a spec row
+  const rows = Array.from(source.children);
+  const specRows = rows.slice(1); // assume first row holds title/images; rest are specs
+  const authoredSpecs = specRows.map((specRow, idx) => {
+    const cells = Array.from(specRow.children);
+    let leftValue = '';
+    let label = '';
+    let rightValue = '';
+    if (cells.length >= 3) {
+      const p0 = cells[0].querySelector('p, h4, span') || cells[0];
+      const p1 = cells[1].querySelector('p, h4, span') || cells[1];
+      const p2 = cells[2].querySelector('p, h4, span') || cells[2];
+      leftValue = (p0 && p0.textContent.trim()) || '';
+      label = (p1 && p1.textContent.trim()) || '';
+      rightValue = (p2 && p2.textContent.trim()) || '';
+    } else {
+      const ps = specRow.querySelectorAll('p, h4, span');
+      if (ps.length >= 3) {
+        label = ps[0].textContent.trim();
+        leftValue = ps[1].textContent.trim();
+        rightValue = ps[2].textContent.trim();
+      } else if (ps.length === 2) {
+        leftValue = ps[0].textContent.trim();
+        label = ps[1].textContent.trim();
+      }
+    }
+    return {
+      key: `spec-${idx + 1}`,
+      label,
+      leftValue,
+      rightValue,
+    };
+  }).filter((s) => s.label || s.leftValue || s.rightValue);
 
   // build tabs + articles
   authoredSpecs.forEach((s, idx) => {
-    const id = (s.label || `spec-${idx + 1}`).toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    const id = (s.label || `spec-${idx + 1}`)
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-');
 
     // header item
     const specItem = document.createElement('div');
@@ -189,13 +194,18 @@ export default function decorate(block) {
     link.addEventListener('click', (e) => {
       e.preventDefault();
       // deactivate all
-      block.querySelectorAll('.spec-item').forEach((i) => i.classList.remove('active'));
-      block.querySelectorAll('.specs-article').forEach((a) => a.classList.remove('active'));
+      block
+        .querySelectorAll('.spec-item')
+        .forEach((i) => i.classList.remove('active'));
+      block
+        .querySelectorAll('.specs-article')
+        .forEach((a) => a.classList.remove('active'));
       // activate clicked
       const item = link.closest('.spec-item');
       if (item) item.classList.add('active');
       const targetId = link.getAttribute('href');
-      const article = block.querySelector(`.specs-article${targetId}`) || block.querySelector(targetId);
+      const article = block.querySelector(`.specs-article${targetId}`)
+        || block.querySelector(targetId);
       if (article) article.classList.add('active');
     });
   });
