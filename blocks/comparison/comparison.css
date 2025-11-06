@@ -45,6 +45,7 @@
 .block.comparison .comparison-content {
     text-align: center;
 }
+
 .vehicle-titles{
     display: flex;
     justify-content: space-between;
