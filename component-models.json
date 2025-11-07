@@ -384,6 +384,36 @@
     ]
   },
   {
+    "id": "poster",
+    "fields": [
+      {
+        "component": "reference",
+        "name": "image",
+        "label": "Image",
+        "valueType": "string",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "name": "imageAlt",
+        "label": "Image alt text",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "content_title",
+        "label": "Title",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "content_descriptionHTML",
+        "label": "Description",
+        "valueType": "string"
+      }
+    ]
+  },
+  {
     "id": "teaser",
     "fields": [
       {
