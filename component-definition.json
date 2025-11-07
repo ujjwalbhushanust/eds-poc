@@ -203,8 +203,6 @@
                 "template": {
                   "name": "Poster",
                   "model": "poster",
-                  "image": "https://via.placeholder.com/800x450?text=Poster+Image",
-                  "imageAlt": "Poster image",
                   "content_title": "Peak performance",
                   "content_descriptionHTML": "<p>Use AEM&#39;s serverless architecture to meet any traffic need. Use AEM&#39;s PageSpeed Insights GitHub action to evaluate every Pull Request for Lighthouse Score.</p>"
                 }
