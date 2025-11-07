@@ -1,29 +1,29 @@
 export default function decorate(block) {
   block.classList.add('block', 'comparison');
 
-  // snapshot original authored DOM to extract content
-  const source = block.cloneNode(true);
+  // read authored values (flat fields, similar to teaser pattern)
+  const get = (name) => {
+    const el = block.querySelector(`[data-model-key="${name}"]`);
+    return el ? el.textContent.trim() : '';
+  };
+  const getImg = (name) => {
+    const el = block.querySelector(`[data-model-key="${name}"] img, [data-model-key="${name}"] picture img`);
+    return el ? { src: el.currentSrc || el.src, alt: el.alt || '' } : { src: '', alt: '' };
+  };
 
-  // derive title from first heading or paragraph
-  const heading = source.querySelector('h1,h2,h3,h4,h5,h6');
-  const firstP = source.querySelector('p');
-  const title = (heading && heading.textContent.trim())
-    || (firstP && firstP.textContent.trim())
-    || 'Compare models';
+  const title = get('content_title') || 'Compare models';
+  const left = getImg('left_image');
+  const right = getImg('right_image');
+  const leftTitle = get('left_title');
+  const rightTitle = get('right_title');
 
-  // derive images (first and last img in authored content)
-  const imgs = Array.from(source.querySelectorAll('img'));
-  const leftImg = imgs[0];
-  const rightImg = imgs.length > 1 ? imgs[imgs.length - 1] : imgs[0];
-  const leftSrc = (leftImg && leftImg.src) || '';
-  const rightSrc = (rightImg && rightImg.src) || '';
-  const leftAlt = (leftImg && leftImg.alt) || 'Left image';
-  const rightAlt = (rightImg && rightImg.alt) || 'Right image';
-
-  // optional vehicle titles (first and last h3 if present)
-  const h3s = Array.from(source.querySelectorAll('h3'));
-  const leftTitle = (h3s[0] && h3s[0].textContent.trim()) || '';
-  const rightTitle = (h3s.length > 1 && h3s[h3s.length - 1].textContent.trim()) || '';
+  const specs = [
+    { label: get('specs_fuelTank_label'), left: get('specs_fuelTank_left'), right: get('specs_fuelTank_right') },
+    { label: get('specs_height_label'), left: get('specs_height_left'), right: get('specs_height_right') },
+    { label: get('specs_length_label'), left: get('specs_length_left'), right: get('specs_length_right') },
+    { label: get('specs_shocks_label'), left: get('specs_shocks_left'), right: get('specs_shocks_right') },
+    { label: get('specs_colour_label'), left: get('specs_colour_left'), right: get('specs_colour_right') },
+  ].filter((s) => s.label || s.left || s.right);
 
   // reset
   block.innerHTML = '';
@@ -40,10 +40,10 @@ export default function decorate(block) {
   // left image
   const leftCol = document.createElement('div');
   leftCol.className = 'comparison-image';
-  if (leftSrc) {
+  if (left.src) {
     const imgL = document.createElement('img');
-    imgL.src = leftSrc;
-    imgL.alt = leftAlt;
+    imgL.src = left.src;
+    imgL.alt = left.alt || 'Left image';
     leftCol.appendChild(imgL);
   }
   row.appendChild(leftCol);
@@ -60,38 +60,12 @@ export default function decorate(block) {
   specsBody.className = 'specs-body';
 
   // collect spec rows from authored DOM: treat each child row after the first as a spec row
-  const rows = Array.from(source.children);
-  const specRows = rows.slice(1); // assume first row holds title/images; rest are specs
-  const authoredSpecs = specRows.map((specRow, idx) => {
-    const cells = Array.from(specRow.children);
-    let leftValue = '';
-    let label = '';
-    let rightValue = '';
-    if (cells.length >= 3) {
-      const p0 = cells[0].querySelector('p, h4, span') || cells[0];
-      const p1 = cells[1].querySelector('p, h4, span') || cells[1];
-      const p2 = cells[2].querySelector('p, h4, span') || cells[2];
-      leftValue = (p0 && p0.textContent.trim()) || '';
-      label = (p1 && p1.textContent.trim()) || '';
-      rightValue = (p2 && p2.textContent.trim()) || '';
-    } else {
-      const ps = specRow.querySelectorAll('p, h4, span');
-      if (ps.length >= 3) {
-        label = ps[0].textContent.trim();
-        leftValue = ps[1].textContent.trim();
-        rightValue = ps[2].textContent.trim();
-      } else if (ps.length === 2) {
-        leftValue = ps[0].textContent.trim();
-        label = ps[1].textContent.trim();
-      }
-    }
-    return {
-      key: `spec-${idx + 1}`,
-      label,
-      leftValue,
-      rightValue,
-    };
-  }).filter((s) => s.label || s.leftValue || s.rightValue);
+  const authoredSpecs = specs.map((s, idx) => ({
+    key: `spec-${idx + 1}`,
+    label: s.label,
+    leftValue: s.left,
+    rightValue: s.right,
+  }));
 
   // build tabs + articles
   authoredSpecs.forEach((s, idx) => {
@@ -178,10 +152,10 @@ export default function decorate(block) {
   // right image
   const rightCol = document.createElement('div');
   rightCol.className = 'comparison-image';
-  if (rightSrc) {
+  if (right.src) {
     const imgR = document.createElement('img');
-    imgR.src = rightSrc;
-    imgR.alt = rightAlt;
+    imgR.src = right.src;
+    imgR.alt = right.alt || 'Right image';
     rightCol.appendChild(imgR);
   }
   row.appendChild(rightCol);

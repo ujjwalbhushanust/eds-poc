@@ -90,6 +90,96 @@
           "name": "right_title",
           "label": "Right vehicle title",
           "valueType": "string"
+        },
+        {
+          "component": "text",
+          "name": "specs_fuelTank_label",
+          "label": "Spec 1 Label (Fuel Tank Capacity)",
+          "valueType": "string"
+        },
+        {
+          "component": "text",
+          "name": "specs_fuelTank_left",
+          "label": "Spec 1 Left Value",
+          "valueType": "string"
+        },
+        {
+          "component": "text",
+          "name": "specs_fuelTank_right",
+          "label": "Spec 1 Right Value",
+          "valueType": "string"
+        },
+        {
+          "component": "text",
+          "name": "specs_height_label",
+          "label": "Spec 2 Label (Height)",
+          "valueType": "string"
+        },
+        {
+          "component": "text",
+          "name": "specs_height_left",
+          "label": "Spec 2 Left Value",
+          "valueType": "string"
+        },
+        {
+          "component": "text",
+          "name": "specs_height_right",
+          "label": "Spec 2 Right Value",
+          "valueType": "string"
+        },
+        {
+          "component": "text",
+          "name": "specs_length_label",
+          "label": "Spec 3 Label (Length)",
+          "valueType": "string"
+        },
+        {
+          "component": "text",
+          "name": "specs_length_left",
+          "label": "Spec 3 Left Value",
+          "valueType": "string"
+        },
+        {
+          "component": "text",
+          "name": "specs_length_right",
+          "label": "Spec 3 Right Value",
+          "valueType": "string"
+        },
+        {
+          "component": "text",
+          "name": "specs_shocks_label",
+          "label": "Spec 4 Label (Shock Absorbers)",
+          "valueType": "string"
+        },
+        {
+          "component": "text",
+          "name": "specs_shocks_left",
+          "label": "Spec 4 Left Value",
+          "valueType": "string"
+        },
+        {
+          "component": "text",
+          "name": "specs_shocks_right",
+          "label": "Spec 4 Right Value",
+          "valueType": "string"
+        },
+        {
+          "component": "text",
+          "name": "specs_colour_label",
+          "label": "Spec 5 Label (Colour/Graphic Options)",
+          "valueType": "string"
+        },
+        {
+          "component": "text",
+          "name": "specs_colour_left",
+          "label": "Spec 5 Left Value",
+          "valueType": "string"
+        },
+        {
+          "component": "text",
+          "name": "specs_colour_right",
+          "label": "Spec 5 Right Value",
+          "valueType": "string"
         }
       ]
     },
